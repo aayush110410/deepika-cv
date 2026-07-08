@@ -1,6 +1,7 @@
 import { useRef } from 'react'
+import { motion } from 'motion/react'
 import { gsap, useGSAP } from '../lib/gsap'
-import { Counter, SectionHeading } from '../components/micro'
+import { Counter, SectionHeading, springSnappy, springSoft } from '../components/micro'
 import { catReceipt, education } from '../content'
 
 export default function Education() {
@@ -51,8 +52,10 @@ export default function Education() {
         {/* institution ledger */}
         <div>
           {education.map((e) => (
-            <div
+            <motion.div
               key={e.degree}
+              whileHover={{ x: 10 }}
+              transition={springSnappy}
               className={`edu-row rule-top grid grid-cols-[1fr_auto] items-baseline gap-4 py-7 md:py-9 ${
                 e.current ? 'frame-ants px-4 md:px-6' : ''
               }`}
@@ -88,12 +91,16 @@ export default function Education() {
                   {e.period}
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* CAT scorecard, printed like a broker receipt */}
-        <div className="edu-receipt receipt h-fit self-start p-6 md:sticky md:top-24 md:p-8">
+        <motion.div
+          whileHover={{ rotate: -1.2, y: -6 }}
+          transition={springSoft}
+          className="edu-receipt receipt h-fit self-start p-6 md:sticky md:top-24 md:p-8"
+        >
           <p className="text-ivory-dim font-mono text-[10px] tracking-[0.22em]">{catReceipt.title}</p>
           <div className="border-line-strong mt-4 border-t border-dashed" />
 
@@ -135,7 +142,7 @@ export default function Education() {
               }}
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

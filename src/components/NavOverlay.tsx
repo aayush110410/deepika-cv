@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import { motion } from 'motion/react'
 import { gsap, useGSAP } from '../lib/gsap'
 import { useLenisInstance, useScrollTo } from '../hooks/useLenis'
 import { navLinks, site } from '../content'
-import { Scramble } from './micro'
+import { Scramble, springSnappy } from './micro'
 
 function useISTClock() {
   const [time, setTime] = useState('')
@@ -87,7 +88,9 @@ export default function NavOverlay() {
           <span className="hidden md:block" suppressHydrationWarning>
             GURGAON — {time} IST
           </span>
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            transition={springSnappy}
             onClick={() => setOpen((v) => !v)}
             className="pointer-events-auto flex items-center gap-2"
             aria-expanded={open}
@@ -95,7 +98,7 @@ export default function NavOverlay() {
           >
             <span className={`dot-live ${open ? 'bg-ivory' : ''}`} />
             <Scramble text={open ? 'CLOSE' : 'MENU'} />
-          </button>
+          </motion.button>
         </div>
       </header>
 
@@ -106,7 +109,10 @@ export default function NavOverlay() {
             {navLinks.map((l) => (
               <div key={l.href} className="overflow-hidden">
                 <div className="nav-link-inner">
-                  <button
+                  <motion.button
+                    whileHover={{ x: 22 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={springSnappy}
                     onClick={() => go(l.href)}
                     className="group flex items-baseline gap-4 text-left md:gap-7"
                   >
@@ -114,7 +120,7 @@ export default function NavOverlay() {
                     <span className="face-poster text-ivory group-hover:text-mint text-[13vw] leading-[1.02] transition-colors duration-300 group-hover:italic md:text-[6.5vw]">
                       {l.label}
                     </span>
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             ))}

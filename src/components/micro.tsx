@@ -1,7 +1,8 @@
 import { useRef, type ReactNode } from 'react'
+import { motion, useMotionValue, useSpring } from 'motion/react'
 import { gsap, useGSAP, SCRAMBLE_CHARS } from '../lib/gsap'
 
-/* ── MagneticButton ───────────────────────────────────── */
+/* ── MagneticButton — Framer Motion springs ───────────── */
 
 export function Magnetic({
   children,
@@ -13,40 +14,33 @@ export function Magnetic({
   className?: string
 }) {
   const hostRef = useRef<HTMLDivElement>(null)
-  const innerRef = useRef<HTMLDivElement>(null)
+  const rawX = useMotionValue(0)
+  const rawY = useMotionValue(0)
+  const x = useSpring(rawX, { stiffness: 160, damping: 14, mass: 0.2 })
+  const y = useSpring(rawY, { stiffness: 160, damping: 14, mass: 0.2 })
 
-  useGSAP(
-    () => {
-      if (!window.matchMedia('(pointer: fine)').matches) return
-      const host = hostRef.current!
-      const inner = innerRef.current!
-      const xTo = gsap.quickTo(inner, 'x', { duration: 0.4, ease: 'power3.out' })
-      const yTo = gsap.quickTo(inner, 'y', { duration: 0.4, ease: 'power3.out' })
-
-      const onMove = (e: MouseEvent) => {
-        const r = host.getBoundingClientRect()
-        xTo((e.clientX - (r.left + r.width / 2)) * strength)
-        yTo((e.clientY - (r.top + r.height / 2)) * strength)
-      }
-      const onLeave = () => {
-        gsap.to(inner, { x: 0, y: 0, duration: 1, ease: 'elastic.out(1, 0.3)' })
-      }
-      host.addEventListener('mousemove', onMove)
-      host.addEventListener('mouseleave', onLeave)
-      return () => {
-        host.removeEventListener('mousemove', onMove)
-        host.removeEventListener('mouseleave', onLeave)
-      }
-    },
-    { scope: hostRef },
-  )
+  const onMove = (e: React.MouseEvent) => {
+    if (!window.matchMedia('(pointer: fine)').matches) return
+    const r = hostRef.current!.getBoundingClientRect()
+    rawX.set((e.clientX - (r.left + r.width / 2)) * strength)
+    rawY.set((e.clientY - (r.top + r.height / 2)) * strength)
+  }
+  const onLeave = () => {
+    rawX.set(0)
+    rawY.set(0)
+  }
 
   return (
-    <div ref={hostRef} className={className}>
-      <div ref={innerRef}>{children}</div>
+    <div ref={hostRef} className={className} onMouseMove={onMove} onMouseLeave={onLeave}>
+      <motion.div style={{ x, y }}>{children}</motion.div>
     </div>
   )
 }
+
+/* ── shared Framer Motion presets ─────────────────────── */
+
+export const springSnappy = { type: 'spring', stiffness: 320, damping: 22 } as const
+export const springSoft = { type: 'spring', stiffness: 180, damping: 18 } as const
 
 /* ── ScrambleText — decodes on hover ──────────────────── */
 

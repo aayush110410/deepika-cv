@@ -1,6 +1,7 @@
 import { useRef } from 'react'
+import { motion } from 'motion/react'
 import { gsap, useGSAP } from '../lib/gsap'
-import { SectionHeading } from '../components/micro'
+import { SectionHeading, springSnappy } from '../components/micro'
 import { projects } from '../content'
 
 /**
@@ -51,19 +52,30 @@ function Row({ project }: { project: (typeof projects)[number] }) {
       onMouseLeave={onLeave}
       data-cursor="hover"
     >
-      <div className="flex flex-col gap-2 px-5 py-7 md:flex-row md:items-baseline md:justify-between md:px-10 md:py-9">
+      <motion.div
+        whileHover="hover"
+        className="flex flex-col gap-2 px-5 py-7 md:flex-row md:items-baseline md:justify-between md:px-10 md:py-9"
+      >
         <div>
-          <h3 className="face-poster text-ivory text-3xl font-semibold md:text-[3.4vw]">
+          <motion.h3
+            variants={{ hover: { x: 18 } }}
+            transition={springSnappy}
+            className="face-poster text-ivory text-3xl font-semibold md:text-[3.4vw]"
+          >
             {project.title}
-          </h3>
+          </motion.h3>
           <p className="text-muted mt-2 max-w-xl text-[13px] leading-snug md:hidden">
             {project.desc}
           </p>
         </div>
-        <span className="text-muted font-mono text-[10px] tracking-[0.2em] md:text-xs">
+        <motion.span
+          variants={{ hover: { x: -14 } }}
+          transition={springSnappy}
+          className="text-muted font-mono text-[10px] tracking-[0.2em] md:text-xs"
+        >
           {project.meta}
-        </span>
-      </div>
+        </motion.span>
+      </motion.div>
 
       {/* the tape */}
       <div className="fm-band bg-mint text-ink invisible absolute inset-0 items-center overflow-hidden md:visible md:flex">

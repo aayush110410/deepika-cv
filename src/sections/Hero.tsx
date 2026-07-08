@@ -1,7 +1,9 @@
 import { useRef } from 'react'
+import { motion } from 'motion/react'
 import { gsap, SplitText, useGSAP } from '../lib/gsap'
 import Aurora from '../components/Aurora'
 import Marquee from '../components/Marquee'
+import { springSnappy } from '../components/micro'
 import { site, tickerQuotes } from '../content'
 
 export default function Hero({ ready }: { ready: boolean }) {
@@ -81,7 +83,13 @@ export default function Hero({ ready }: { ready: boolean }) {
           <span className="block overflow-hidden py-[0.05em]">
             <span className="hero-line-2 face-wonk block text-[16.5vw] font-semibold italic tracking-[-0.01em] md:text-[15.5vw]">
               {site.lastName}
-              <span className="text-mint not-italic">.</span>
+              <motion.span
+                whileHover={{ scale: 1.5, rotate: 12 }}
+                transition={springSnappy}
+                className="text-mint inline-block not-italic"
+              >
+                .
+              </motion.span>
             </span>
           </span>
         </h1>
@@ -110,14 +118,16 @@ export default function Hero({ ready }: { ready: boolean }) {
       <div className="hero-bottom rule-top relative z-10 mt-12">
         <Marquee duration={30} className="py-3">
           {tickerQuotes.map((q) => (
-            <span
+            <motion.span
               key={q.sym}
+              whileHover={{ y: -3, color: 'var(--color-ivory)' }}
+              transition={springSnappy}
               className="text-ivory-dim mx-7 flex items-baseline gap-2 font-mono text-[10px] tracking-[0.14em] md:text-xs"
             >
               <span className="text-ivory">{q.sym}</span>
               <span className="text-mint">{q.val} ▲</span>
               <span>{q.delta}</span>
-            </span>
+            </motion.span>
           ))}
         </Marquee>
       </div>

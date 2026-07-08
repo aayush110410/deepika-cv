@@ -1,7 +1,8 @@
 import { useRef } from 'react'
+import { motion } from 'motion/react'
 import { gsap, useGSAP } from '../lib/gsap'
 import Marquee from '../components/Marquee'
-import { Magnetic } from '../components/micro'
+import { Magnetic, springSnappy } from '../components/micro'
 import { useScrollTo } from '../hooks/useLenis'
 import { footer, site } from '../content'
 
@@ -48,7 +49,9 @@ export default function Footer() {
 
       <div className="flex flex-1 items-center justify-center px-5 py-16">
         <Magnetic strength={0.25}>
-          <a
+          <motion.a
+            whileTap={{ scale: 0.96 }}
+            transition={springSnappy}
             href={`mailto:${site.email}`}
             className="ft-cta group block text-center"
             data-cursor="hover"
@@ -59,19 +62,33 @@ export default function Footer() {
             <span className="text-mint mt-6 inline-block font-mono text-[10px] tracking-[0.3em] md:text-xs">
               {site.email.toUpperCase()} ↗
             </span>
-          </a>
+          </motion.a>
         </Magnetic>
       </div>
 
       <div>
         <div className="ft-meta text-ivory-dim flex flex-wrap items-center justify-between gap-4 px-5 pb-8 font-mono text-[10px] tracking-[0.18em] md:px-10 md:text-xs">
-          <a href={site.linkedin} target="_blank" rel="noreferrer" className="link-sweep">
+          <motion.a
+            whileHover={{ y: -3 }}
+            transition={springSnappy}
+            href={site.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            className="link-sweep"
+          >
             LINKEDIN ↗
-          </a>
+          </motion.a>
           <span>{site.location.toUpperCase()}</span>
-          <button onClick={() => scrollTo('#top')} className="link-sweep" data-cursor="hover">
+          <motion.button
+            whileHover={{ y: -3 }}
+            whileTap={{ scale: 0.95 }}
+            transition={springSnappy}
+            onClick={() => scrollTo('#top')}
+            className="link-sweep"
+            data-cursor="hover"
+          >
             BACK TO TOP ↑
-          </button>
+          </motion.button>
         </div>
 
         <div className="rule-top">

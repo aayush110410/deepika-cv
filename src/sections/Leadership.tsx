@@ -1,52 +1,38 @@
 import { useRef } from 'react'
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'motion/react'
 import { gsap, useGSAP } from '../lib/gsap'
 import Marquee from '../components/Marquee'
-import { SectionHeading } from '../components/micro'
+import { SectionHeading, springSoft } from '../components/micro'
 import { alsoFluent, leadership, medals } from '../content'
 
+/* Framer Motion 3D tilt: springs chase the cursor, glow rides a motion template */
 function TiltCard({ item }: { item: (typeof leadership)[number] }) {
-  const ref = useRef<HTMLDivElement>(null)
+  const px = useMotionValue(0.5)
+  const py = useMotionValue(0.5)
+  const rotateX = useSpring(useTransform(py, [0, 1], [7, -7]), { stiffness: 220, damping: 20 })
+  const rotateY = useSpring(useTransform(px, [0, 1], [-7, 7]), { stiffness: 220, damping: 20 })
+  const glowX = useTransform(px, (v) => v * 100)
+  const glowY = useTransform(py, (v) => v * 100)
+  const glow = useMotionTemplate`radial-gradient(220px circle at ${glowX}% ${glowY}%, rgb(55 230 166 / 0.09), transparent 75%)`
 
-  useGSAP(
-    () => {
-      if (!window.matchMedia('(pointer: fine)').matches) return
-      const el = ref.current!
-      const rx = gsap.quickTo(el, 'rotationX', { duration: 0.5, ease: 'power3.out' })
-      const ry = gsap.quickTo(el, 'rotationY', { duration: 0.5, ease: 'power3.out' })
-
-      const onMove = (e: MouseEvent) => {
-        const r = el.getBoundingClientRect()
-        const px = (e.clientX - r.left) / r.width
-        const py = (e.clientY - r.top) / r.height
-        ry((px - 0.5) * 10)
-        rx((0.5 - py) * 10)
-        el.style.setProperty('--mx', `${px * 100}%`)
-        el.style.setProperty('--my', `${py * 100}%`)
-      }
-      const onLeave = () => {
-        rx(0)
-        ry(0)
-      }
-      el.addEventListener('mousemove', onMove)
-      el.addEventListener('mouseleave', onLeave)
-      return () => {
-        el.removeEventListener('mousemove', onMove)
-        el.removeEventListener('mouseleave', onLeave)
-      }
-    },
-    { scope: ref },
-  )
+  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!window.matchMedia('(pointer: fine)').matches) return
+    const r = e.currentTarget.getBoundingClientRect()
+    px.set((e.clientX - r.left) / r.width)
+    py.set((e.clientY - r.top) / r.height)
+  }
+  const onLeave = () => {
+    px.set(0.5)
+    py.set(0.5)
+  }
 
   return (
     <div style={{ perspective: '900px' }}>
-      <div
-        ref={ref}
+      <motion.div
         className="ld-card bg-ink relative h-full p-7 md:p-9"
-        style={{
-          transformStyle: 'preserve-3d',
-          backgroundImage:
-            'radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgb(55 230 166 / 0.07), transparent 75%)',
-        }}
+        style={{ transformStyle: 'preserve-3d', rotateX, rotateY, backgroundImage: glow }}
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
       >
         <div className="text-muted flex justify-between font-mono text-[10px] tracking-[0.18em]">
           <span>{item.year}</span>
@@ -59,7 +45,7 @@ function TiltCard({ item }: { item: (typeof leadership)[number] }) {
           {item.role.toUpperCase()}
         </p>
         <p className="text-ivory-dim mt-4 text-[13px] leading-relaxed md:text-sm">{item.story}</p>
-      </div>
+      </motion.div>
     </div>
   )
 }
@@ -105,8 +91,10 @@ export default function Leadership() {
         {/* the trophy shelf */}
         <div className="ld-medals mt-16 grid gap-4 md:mt-24 md:grid-cols-3 md:gap-6">
           {medals.map((m) => (
-            <div
+            <motion.div
               key={m.event}
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={springSoft}
               className="ld-medal border-line flex items-center gap-5 border p-5 md:p-6"
             >
               <span
@@ -122,7 +110,7 @@ export default function Leadership() {
                 <p className="text-ivory text-sm font-medium md:text-base">{m.event}</p>
                 <p className="text-muted mt-1 font-mono text-[10px] tracking-[0.18em]">{m.year}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { MotionConfig } from 'motion/react'
 import { LenisContext, useLenis } from './hooks/useLenis'
 import { useFinePointer, useReducedMotion } from './hooks/useMedia'
 import { ScrollTrigger } from './lib/gsap'
@@ -22,8 +23,9 @@ export default function App() {
   const [ready, setReady] = useState(false)
 
   return (
-    <LenisContext.Provider value={lenis}>
-      {finePointer && !reduced && <CustomCursor />}
+    <MotionConfig reducedMotion="user">
+      <LenisContext.Provider value={lenis}>
+        {finePointer && !reduced && <CustomCursor />}
       <GrainOverlay />
       <Preloader
         onReveal={() => {
@@ -42,6 +44,7 @@ export default function App() {
         <Vision />
         <Footer />
       </main>
-    </LenisContext.Provider>
+      </LenisContext.Provider>
+    </MotionConfig>
   )
 }

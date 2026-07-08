@@ -1,7 +1,8 @@
 import { useRef } from 'react'
+import { motion } from 'motion/react'
 import { gsap, SplitText, useGSAP } from '../lib/gsap'
 import Marquee from '../components/Marquee'
-import { Counter, SectionHeading } from '../components/micro'
+import { Counter, SectionHeading, springSnappy } from '../components/micro'
 import { bio, highlightsMarquee, manifesto, stats, strengths } from '../content'
 
 export default function About() {
@@ -78,12 +79,14 @@ export default function About() {
             <p className="text-ivory-dim max-w-xl text-sm leading-relaxed md:text-base">{bio[1]}</p>
             <div className="flex flex-wrap gap-2">
               {strengths.map((s) => (
-                <span
+                <motion.span
                   key={s}
+                  whileHover={{ y: -4, scale: 1.05, borderColor: 'var(--color-mint)' }}
+                  transition={springSnappy}
                   className="border-line-strong text-ivory rounded-full border px-4 py-2 font-mono text-[10px] tracking-[0.16em]"
                 >
                   {s}
-                </span>
+                </motion.span>
               ))}
             </div>
           </div>
@@ -92,7 +95,12 @@ export default function About() {
         {/* the stat wall */}
         <div className="about-stats mt-20 grid grid-cols-2 md:mt-28 md:grid-cols-3">
           {stats.map((s) => (
-            <div key={s.label} className="about-stat rule-top mr-6 py-8 md:mr-12 md:py-10">
+            <motion.div
+              key={s.label}
+              whileHover={{ x: 8 }}
+              transition={springSnappy}
+              className="about-stat rule-top mr-6 py-8 md:mr-12 md:py-10"
+            >
               <Counter
                 value={s.value}
                 decimals={s.decimals}
@@ -102,7 +110,7 @@ export default function About() {
               <span className="text-muted mt-3 block font-mono text-[10px] tracking-[0.18em] uppercase md:text-xs">
                 {s.label}
               </span>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

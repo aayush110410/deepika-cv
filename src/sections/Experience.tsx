@@ -1,11 +1,16 @@
 import { useRef } from 'react'
+import { motion } from 'motion/react'
 import { gsap, useGSAP } from '../lib/gsap'
-import { SectionHeading } from '../components/micro'
+import { SectionHeading, springSnappy, springSoft } from '../components/micro'
 import { experience } from '../content'
 
 function Card({ job }: { job: (typeof experience)[number] }) {
   return (
-    <article className="xp-card border-line bg-ink-2/60 flex w-[88vw] shrink-0 flex-col justify-between border p-6 md:w-[56vw] md:p-10 lg:w-[46vw]">
+    <motion.article
+      whileHover={{ y: -10, borderColor: 'var(--color-line-strong)' }}
+      transition={springSoft}
+      className="xp-card border-line bg-ink-2/60 flex w-[88vw] shrink-0 flex-col justify-between border p-6 md:w-[56vw] md:p-10 lg:w-[46vw]"
+    >
       <div>
         <div className="text-muted flex items-baseline justify-between font-mono text-[10px] tracking-[0.18em] md:text-xs">
           <span className="text-mint">{job.index}</span>
@@ -40,15 +45,17 @@ function Card({ job }: { job: (typeof experience)[number] }) {
 
       <div className="mt-8 flex flex-wrap gap-2">
         {job.metrics.map((m) => (
-          <span
+          <motion.span
             key={m}
+            whileHover={{ scale: 1.1, backgroundColor: 'rgba(55, 230, 166, 0.12)' }}
+            transition={springSnappy}
             className="text-mint border-mint-deep rounded-full border px-3 py-1.5 font-mono text-[9px] tracking-[0.16em] md:text-[10px]"
           >
             {m}
-          </span>
+          </motion.span>
         ))}
       </div>
-    </article>
+    </motion.article>
   )
 }
 
