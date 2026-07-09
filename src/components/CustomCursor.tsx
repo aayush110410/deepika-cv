@@ -73,11 +73,11 @@ export default function CustomCursor() {
     <div aria-hidden="true">
       <div
         ref={dotRef}
-        className="bg-mint pointer-events-none fixed top-0 left-0 z-[120] size-2 rounded-full"
+        className="bg-rose pointer-events-none fixed top-0 left-0 z-[120] size-2 rounded-full"
       />
       <div
         ref={ringRef}
-        className="border-ivory/60 pointer-events-none fixed top-0 left-0 z-[119] size-9 rounded-full border mix-blend-difference"
+        className="border-fg/60 pointer-events-none fixed top-0 left-0 z-[119] size-9 rounded-full border mix-blend-difference"
       />
     </div>
   )

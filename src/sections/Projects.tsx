@@ -6,7 +6,7 @@ import { projects } from '../content'
 
 /**
  * FlowingMenu, hand-built in the spirit of React Bits: hovering a row pours a
- * mint tape through it from whichever edge the cursor entered.
+ * rose tape through it from whichever edge the cursor entered.
  */
 function Row({ project }: { project: (typeof projects)[number] }) {
   const rowRef = useRef<HTMLDivElement>(null)
@@ -60,7 +60,7 @@ function Row({ project }: { project: (typeof projects)[number] }) {
           <motion.h3
             variants={{ hover: { x: 18 } }}
             transition={springSnappy}
-            className="face-poster text-ivory text-3xl font-semibold md:text-[3.4vw]"
+            className="face-poster text-fg text-3xl font-semibold md:text-[3.4vw]"
           >
             {project.title}
           </motion.h3>
@@ -78,7 +78,7 @@ function Row({ project }: { project: (typeof projects)[number] }) {
       </motion.div>
 
       {/* the tape */}
-      <div className="fm-band bg-mint text-ink invisible absolute inset-0 items-center overflow-hidden md:visible md:flex">
+      <div className="fm-band bg-rose text-plum invisible absolute inset-0 items-center overflow-hidden md:visible md:flex">
         <div className="fm-tape flex w-max items-center whitespace-nowrap">
           {[0, 1].map((copy) => (
             <div key={copy} className="flex items-center" aria-hidden={copy === 1}>
@@ -87,7 +87,7 @@ function Row({ project }: { project: (typeof projects)[number] }) {
                   <span className="face-poster px-5 text-2xl font-semibold italic md:text-4xl">
                     {t}
                   </span>
-                  <span className="text-lg">✦</span>
+                  <span className="text-lg">✿</span>
                 </span>
               ))}
             </div>
@@ -123,7 +123,7 @@ export default function Projects() {
   )
 
   return (
-    <section id="work" ref={ref} className="relative mt-28 md:mt-40">
+    <section id="work" ref={ref} data-act="night" className="relative mt-28 md:mt-40">
       <SectionHeading index="04/" title="Selected Work" note="HOVER TO READ THE TAPE" />
       <div className="border-line border-t">
         {projects.map((p) => (

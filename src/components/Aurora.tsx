@@ -80,7 +80,7 @@ type AuroraProps = {
 }
 
 export default function Aurora({
-  colorStops = ['#0f7a58', '#37e6a6', '#7fd4ff'],
+  colorStops = ['#e0537f', '#ffb38a', '#b89be6'],
   amplitude = 1.0,
   blend = 0.55,
   speed = 1.0,
@@ -187,7 +187,7 @@ export default function Aurora({
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(58% 42% at 50% 0%, rgb(55 230 166 / 0.14), transparent 70%)',
+            'radial-gradient(58% 42% at 50% 0%, rgb(224 83 127 / 0.16), transparent 70%)',
         }}
       />
       <div ref={hostRef} className="absolute inset-0" />

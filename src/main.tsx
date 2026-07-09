@@ -5,6 +5,7 @@ import '@fontsource-variable/fraunces/full-italic.css'
 import '@fontsource-variable/archivo/wdth.css'
 import '@fontsource/ibm-plex-mono/400.css'
 import '@fontsource/ibm-plex-mono/500.css'
+import '@fontsource/pinyon-script/400.css'
 import './index.css'
 import App from './App'
 

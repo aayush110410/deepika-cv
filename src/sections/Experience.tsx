@@ -9,35 +9,35 @@ function Card({ job }: { job: (typeof experience)[number] }) {
     <motion.article
       whileHover={{ y: -10, borderColor: 'var(--color-line-strong)' }}
       transition={springSoft}
-      className="xp-card border-line bg-ink-2/60 flex w-[88vw] shrink-0 flex-col justify-between border p-6 md:w-[56vw] md:p-10 lg:w-[46vw]"
+      className="xp-card border-line bg-card/60 flex w-[88vw] shrink-0 flex-col justify-between border p-6 md:w-[56vw] md:p-10 lg:w-[46vw]"
     >
       <div>
         <div className="text-muted flex items-baseline justify-between font-mono text-[10px] tracking-[0.18em] md:text-xs">
-          <span className="text-mint">{job.index}</span>
+          <span className="text-rose">{job.index}</span>
           <span>{job.period}</span>
-          <span className="border-line-strong text-ivory hidden rounded-full border px-3 py-1 md:inline-block">
+          <span className="border-line-strong text-fg hidden rounded-full border px-3 py-1 md:inline-block">
             {job.tag}
           </span>
         </div>
 
-        <h3 className="face-poster text-ivory mt-6 text-3xl font-semibold md:mt-10 md:text-5xl">
+        <h3 className="face-poster text-fg mt-6 text-3xl font-semibold md:mt-10 md:text-5xl">
           {job.role}
         </h3>
-        <p className="text-ivory-dim mt-2 font-mono text-[11px] tracking-[0.14em] md:text-xs">
+        <p className="text-fg-dim mt-2 font-mono text-[11px] tracking-[0.14em] md:text-xs">
           {job.company.toUpperCase()} · {job.place.toUpperCase()}
         </p>
 
-        <p className="face-poster text-ivory-dim mt-6 max-w-lg text-lg italic md:mt-8 md:text-2xl">
+        <p className="face-poster text-fg-dim mt-6 max-w-lg text-lg italic md:mt-8 md:text-2xl">
           {job.summary}
         </p>
 
         <ul className="mt-6 flex flex-col gap-2.5 md:mt-8">
           {job.points.map((p, i) => (
             <li key={p} className="flex gap-3 text-[13px] leading-snug md:text-sm">
-              <span className="text-mint shrink-0 font-mono text-[10px] leading-[1.9]">
+              <span className="text-rose shrink-0 font-mono text-[10px] leading-[1.9]">
                 {String.fromCharCode(97 + i)}.
               </span>
-              <span className="text-ivory-dim">{p}</span>
+              <span className="text-fg-dim">{p}</span>
             </li>
           ))}
         </ul>
@@ -47,9 +47,9 @@ function Card({ job }: { job: (typeof experience)[number] }) {
         {job.metrics.map((m) => (
           <motion.span
             key={m}
-            whileHover={{ scale: 1.1, backgroundColor: 'rgba(55, 230, 166, 0.12)' }}
+            whileHover={{ scale: 1.1, backgroundColor: 'rgba(224, 83, 127, 0.12)' }}
             transition={springSnappy}
-            className="text-mint border-mint-deep rounded-full border px-3 py-1.5 font-mono text-[9px] tracking-[0.16em] md:text-[10px]"
+            className="text-rose border-rose-deep rounded-full border px-3 py-1.5 font-mono text-[9px] tracking-[0.16em] md:text-[10px]"
           >
             {m}
           </motion.span>
@@ -105,20 +105,21 @@ export default function Experience() {
     <section
       id="experience"
       ref={ref}
+      data-act="day"
       className="relative mt-24 md:mt-36 md:h-svh md:overflow-hidden md:pt-14"
     >
-      <div className="xp-progress bg-mint absolute top-0 left-0 z-20 h-[2px] w-full origin-left scale-x-0" />
+      <div className="xp-progress bg-rose absolute top-0 left-0 z-20 h-[2px] w-full origin-left scale-x-0" />
       <SectionHeading index="02/" title="Experience" note="PLATIZIO SERVICES LLP — NOIDA" />
 
       <div ref={trackRef} className="flex flex-col gap-6 px-5 md:flex-row md:gap-8 md:px-10">
         {/* intro panel rides the rail on desktop */}
         <div className="flex w-full shrink-0 flex-col justify-between md:w-[30vw] md:pr-6">
-          <p className="face-poster text-ivory text-4xl leading-[1.05] md:text-[3.2vw]">
+          <p className="face-poster text-fg text-4xl leading-[1.05] md:text-[3.2vw]">
             Three seats.
             <br />
             One obsession:
             <br />
-            <em className="text-mint">markets.</em>
+            <em className="text-rose">markets.</em>
           </p>
           <p className="text-muted mt-6 hidden font-mono text-[10px] tracking-[0.2em] md:block">
             SCROLL → THE LEDGER READS LEFT TO RIGHT

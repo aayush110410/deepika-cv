@@ -45,7 +45,7 @@ export default function Education() {
   )
 
   return (
-    <section id="education" ref={ref} className="relative mt-28 md:mt-40">
+    <section id="education" ref={ref} data-act="day" className="relative mt-28 md:mt-40">
       <SectionHeading index="03/" title="Education" note="THE PAPER TRAIL" />
 
       <div className="grid gap-14 px-5 md:grid-cols-[1.45fr_1fr] md:gap-16 md:px-10">
@@ -62,28 +62,28 @@ export default function Education() {
             >
               <div>
                 <h3
-                  className={`face-poster text-ivory font-semibold ${
+                  className={`face-poster text-fg font-semibold ${
                     e.current ? 'text-3xl md:text-5xl' : 'text-2xl md:text-4xl'
                   }`}
                 >
                   {e.school}
                 </h3>
-                <p className="text-ivory-dim mt-2 font-mono text-[10px] tracking-[0.16em] md:text-xs">
+                <p className="text-fg-dim mt-2 font-mono text-[10px] tracking-[0.16em] md:text-xs">
                   {e.degree.toUpperCase()}
                 </p>
                 {e.note && (
-                  <p className="text-mint mt-2 font-mono text-[10px] tracking-[0.14em] md:text-xs">
+                  <p className="text-rose mt-2 font-mono text-[10px] tracking-[0.14em] md:text-xs">
                     ▲ {e.note.toUpperCase()}
                   </p>
                 )}
               </div>
               <div className="text-right">
                 {e.current ? (
-                  <span className="text-mint flex items-center justify-end gap-2 font-mono text-sm md:text-lg">
+                  <span className="text-rose flex items-center justify-end gap-2 font-mono text-sm md:text-lg">
                     <span className="dot-live" /> {e.score}
                   </span>
                 ) : (
-                  <span className="face-poster text-ivory block text-2xl font-semibold md:text-4xl">
+                  <span className="face-poster text-fg block text-2xl font-semibold md:text-4xl">
                     {e.score}
                   </span>
                 )}
@@ -101,21 +101,21 @@ export default function Education() {
           transition={springSoft}
           className="edu-receipt receipt h-fit self-start p-6 md:sticky md:top-24 md:p-8"
         >
-          <p className="text-ivory-dim font-mono text-[10px] tracking-[0.22em]">{catReceipt.title}</p>
+          <p className="text-fg-dim font-mono text-[10px] tracking-[0.22em]">{catReceipt.title}</p>
           <div className="border-line-strong mt-4 border-t border-dashed" />
 
           <div className="mt-5 flex flex-col gap-5">
             {catReceipt.rows.map((r) => (
               <div key={r.label}>
                 <div className="flex items-baseline justify-between font-mono text-xs md:text-sm">
-                  <span className="text-ivory-dim">{r.label}</span>
-                  <span className={r.pct > 99 ? 'text-mint' : 'text-ivory'}>
+                  <span className="text-fg-dim">{r.label}</span>
+                  <span className={r.pct > 99 ? 'text-rose' : 'text-fg'}>
                     <Counter value={r.pct} decimals={2} /> %ILE
                   </span>
                 </div>
-                <div className="bg-ink-3 mt-2 h-[3px] w-full overflow-hidden">
+                <div className="bg-bg2 mt-2 h-[3px] w-full overflow-hidden">
                   <div
-                    className={`edu-bar h-full ${r.pct > 99 ? 'bg-mint' : 'bg-ivory-dim'}`}
+                    className={`edu-bar h-full ${r.pct > 99 ? 'bg-rose' : 'bg-fg-dim'}`}
                     style={{ width: `${r.pct}%` }}
                   />
                 </div>
@@ -125,8 +125,8 @@ export default function Education() {
 
           <div className="border-line-strong mt-6 border-t border-dashed pt-5">
             <div className="flex items-baseline justify-between">
-              <span className="text-ivory-dim font-mono text-[10px] tracking-[0.22em]">OVERALL</span>
-              <span className="face-poster text-mint text-5xl font-semibold md:text-6xl">
+              <span className="text-fg-dim font-mono text-[10px] tracking-[0.22em]">OVERALL</span>
+              <span className="face-poster text-rose text-5xl font-semibold md:text-6xl">
                 <Counter value={catReceipt.overall} decimals={2} />
               </span>
             </div>
@@ -138,7 +138,7 @@ export default function Education() {
               className="mt-5 h-10 w-full opacity-70"
               style={{
                 background:
-                  'repeating-linear-gradient(90deg, var(--color-ivory) 0 2px, transparent 2px 5px, var(--color-ivory) 5px 6px, transparent 6px 11px)',
+                  'repeating-linear-gradient(90deg, var(--t-fg) 0 2px, transparent 2px 5px, var(--t-fg) 5px 6px, transparent 6px 11px)',
               }}
             />
           </div>

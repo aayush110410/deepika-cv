@@ -151,14 +151,14 @@ export function SectionHeading({
   return (
     <div ref={ref} className="px-5 md:px-10">
       <div className="sh-rule bg-line-strong h-px w-full" />
-      <div className="text-ivory-dim flex items-baseline justify-between gap-4 pt-3 pb-10 md:pb-14">
+      <div className="text-fg-dim flex items-baseline justify-between gap-4 pt-3 pb-10 md:pb-14">
         <div className="overflow-hidden">
-          <span className="sh-item font-mono text-mint inline-block text-xs md:text-sm">
+          <span className="sh-item font-mono text-rose inline-block text-xs md:text-sm">
             {index}
           </span>
         </div>
         <div className="overflow-hidden">
-          <h2 className="sh-item label-caps text-ivory inline-block text-sm font-semibold md:text-base">
+          <h2 className="sh-item label-caps text-fg inline-block text-sm font-semibold md:text-base">
             {title}
           </h2>
         </div>

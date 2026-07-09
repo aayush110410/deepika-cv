@@ -19,6 +19,29 @@ function useISTClock() {
   return time
 }
 
+/* per-letter wave — each glyph springs up with a tiny cascade on hover */
+function WaveLetters({ text }: { text: string }) {
+  return (
+    <span aria-label={text}>
+      {text.split('').map((c, i) => (
+        <motion.span
+          key={`${c}-${i}`}
+          aria-hidden="true"
+          className="inline-block"
+          variants={{
+            hover: {
+              y: '-12%',
+              transition: { delay: i * 0.028, type: 'spring', stiffness: 420, damping: 24 },
+            },
+          }}
+        >
+          {c}
+        </motion.span>
+      ))}
+    </span>
+  )
+}
+
 export default function NavOverlay() {
   const rootRef = useRef<HTMLDivElement>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
@@ -77,7 +100,7 @@ export default function NavOverlay() {
     <div ref={rootRef}>
       {/* top bar */}
       <header className="pointer-events-none fixed top-0 right-0 left-0 z-[85] mix-blend-difference">
-        <div className="text-ivory flex items-center justify-between px-5 py-4 font-mono text-[10px] tracking-[0.22em] md:px-10 md:text-xs">
+        <div className="text-fg flex items-center justify-between px-5 py-4 font-mono text-[10px] tracking-[0.22em] md:px-10 md:text-xs">
           <button
             onClick={() => go('#top')}
             className="pointer-events-auto"
@@ -96,29 +119,28 @@ export default function NavOverlay() {
             aria-expanded={open}
             aria-label={open ? 'Close menu' : 'Open menu'}
           >
-            <span className={`dot-live ${open ? 'bg-ivory' : ''}`} />
+            <span className={`dot-live ${open ? 'bg-fg' : ''}`} />
             <Scramble text={open ? 'CLOSE' : 'MENU'} />
           </motion.button>
         </div>
       </header>
 
       {/* full-screen menu */}
-      <div className="nav-overlay bg-ink-2 fixed inset-0 z-[84]" role="dialog" aria-modal="true">
+      <div className="nav-overlay bg-bg2 fixed inset-0 z-[84]" role="dialog" aria-modal="true">
         <div className="flex h-full flex-col justify-between px-5 pt-24 pb-8 md:px-10 md:pb-12">
           <nav className="flex flex-col items-start gap-1 md:gap-2">
             {navLinks.map((l) => (
               <div key={l.href} className="overflow-hidden">
                 <div className="nav-link-inner">
                   <motion.button
-                    whileHover={{ x: 22 }}
+                    whileHover="hover"
                     whileTap={{ scale: 0.97 }}
-                    transition={springSnappy}
                     onClick={() => go(l.href)}
                     className="group flex items-baseline gap-4 text-left md:gap-7"
                   >
-                    <span className="text-mint font-mono text-xs md:text-sm">{l.index}</span>
-                    <span className="face-poster text-ivory group-hover:text-mint text-[13vw] leading-[1.02] transition-colors duration-300 group-hover:italic md:text-[6.5vw]">
-                      {l.label}
+                    <span className="text-rose font-mono text-xs md:text-sm">{l.index}</span>
+                    <span className="face-poster text-fg group-hover:text-rose text-[13vw] leading-[1.02] transition-colors duration-300 group-hover:italic md:text-[6.5vw]">
+                      <WaveLetters text={l.label} />
                     </span>
                   </motion.button>
                 </div>
@@ -126,11 +148,13 @@ export default function NavOverlay() {
             ))}
           </nav>
 
-          <div className="text-ivory-dim flex flex-wrap items-end justify-between gap-4 font-mono text-[10px] tracking-[0.18em] md:text-xs">
-            <a href={`mailto:${site.email}`} className="nav-meta link-sweep text-ivory">
+          <div className="text-fg-dim flex flex-wrap items-end justify-between gap-4 font-mono text-[10px] tracking-[0.18em] md:text-xs">
+            <a href={`mailto:${site.email}`} className="nav-meta link-sweep text-fg">
               {site.email.toUpperCase()}
             </a>
-            <span className="nav-meta">{site.location.toUpperCase()}</span>
+            <span className="nav-meta face-script text-rose text-xl tracking-normal normal-case">
+              from Agra, with ambition
+            </span>
             <a
               href={site.linkedin}
               target="_blank"

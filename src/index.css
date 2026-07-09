@@ -1,20 +1,44 @@
 @import 'tailwindcss';
 
+/* ═══ Rosé Editorial — two acts, one palette ═══════════
+   Night: deep plum-wine. Day: blush paper.
+   The runtime vars (--t-*) are tweened by GSAP as the
+   visitor scrolls between acts; Tailwind tokens read them. */
+
+:root {
+  /* boot in the night act */
+  --t-bg: #251018;
+  --t-bg2: #2f1620;
+  --t-card: #2c141e;
+  --t-fg: #f9e9e2;
+  --t-fg-dim: #d9b4b3;
+  --t-muted: #a87e8b;
+  --t-line: rgb(249 233 226 / 0.15);
+  --t-line-strong: rgb(249 233 226 / 0.34);
+}
+
 @theme {
-  --color-ink: #0a0a0e;
-  --color-ink-2: #0e0e13;
-  --color-ink-3: #15151c;
-  --color-ivory: #efe9dc;
-  --color-ivory-dim: #b8b1a0;
-  --color-muted: #7d7869;
-  --color-mint: #37e6a6;
-  --color-mint-deep: #0f7a58;
-  --color-line: rgb(239 233 220 / 0.12);
-  --color-line-strong: rgb(239 233 220 / 0.3);
+  --color-bg: var(--t-bg);
+  --color-bg2: var(--t-bg2);
+  --color-card: var(--t-card);
+  --color-fg: var(--t-fg);
+  --color-fg-dim: var(--t-fg-dim);
+  --color-muted: var(--t-muted);
+  --color-line: var(--t-line);
+  --color-line-strong: var(--t-line-strong);
+
+  /* constants across both acts */
+  --color-rose: #e0537f;
+  --color-rose-deep: #9c2e54;
+  --color-gold: #cf9a52;
+  --color-lav: #b89be6;
+  --color-plum: #2b0f1c;
+  --color-blush: #f7ebe4;
 
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Archivo Variable', system-ui, Helvetica, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
+  --font-script: 'Pinyon Script', cursive;
 
   --tracking-mega: 0.32em;
   --tracking-wide2: 0.16em;
@@ -23,12 +47,12 @@
 /* ── base ─────────────────────────────────────────────── */
 
 html {
-  scrollbar-color: var(--color-ink-3) var(--color-ink);
+  scrollbar-color: var(--t-bg2) var(--t-bg);
 }
 
 body {
-  background: var(--color-ink);
-  color: var(--color-ivory);
+  background: var(--t-bg);
+  color: var(--t-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -36,16 +60,15 @@ body {
 }
 
 ::selection {
-  background: var(--color-mint);
-  color: var(--color-ink);
+  background: var(--color-rose);
+  color: var(--color-blush);
 }
 
 :focus-visible {
-  outline: 1px dashed var(--color-mint);
+  outline: 1px dashed var(--color-rose);
   outline-offset: 4px;
 }
 
-/* custom cursor active → hide the native one */
 .has-cursor,
 .has-cursor * {
   cursor: none !important;
@@ -53,38 +76,51 @@ body {
 
 /* ── display type helpers ─────────────────────────────── */
 
-/* Fraunces at full optical size — the "poster" face */
+/* Fraunces, full optical size, softened — the "rosé" cut */
 .face-poster {
   font-family: var(--font-display);
   font-variation-settings:
     'opsz' 144,
-    'SOFT' 0,
+    'SOFT' 55,
     'WONK' 0;
   line-height: 0.92;
 }
 
-/* wonky cut for the crazy moments */
+/* wonky + extra-soft for the playful moments */
 .face-wonk {
   font-family: var(--font-display);
   font-variation-settings:
     'opsz' 144,
-    'SOFT' 40,
+    'SOFT' 90,
     'WONK' 1;
   line-height: 0.92;
 }
 
-/* hollow / outlined type for oversized backdrop words */
+/* hollow type for backdrop words */
 .face-ghost {
   color: transparent;
-  -webkit-text-stroke: 1px var(--color-line-strong);
+  -webkit-text-stroke: 1px var(--t-line-strong);
 }
 
-/* expanded Archivo caps for structural labels */
+/* calligraphy accents */
+.face-script {
+  font-family: var(--font-script);
+  font-weight: 400;
+}
+
 .label-caps {
   font-family: var(--font-sans);
   font-variation-settings: 'wdth' 125;
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide2);
+}
+
+/* rose → gold foil for the showpiece numbers */
+.text-foil {
+  background: linear-gradient(100deg, var(--color-rose) 10%, var(--color-gold) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* ── grain overlay ────────────────────────────────────── */
@@ -95,7 +131,7 @@ body {
   z-index: 90;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
-  opacity: 0.055;
+  opacity: 0.05;
   animation: grain-shift 0.9s steps(4) infinite;
 }
 
@@ -119,18 +155,16 @@ body {
 
 /* ── shared motifs ────────────────────────────────────── */
 
-/* hairline-ruled section shell */
 .rule-top {
-  border-top: 1px solid var(--color-line);
+  border-top: 1px solid var(--t-line);
 }
 
-/* ticking dot */
 .dot-live {
   display: inline-block;
   width: 0.45em;
   height: 0.45em;
   border-radius: 999px;
-  background: var(--color-mint);
+  background: var(--color-rose);
   animation: dot-pulse 1.6s ease-in-out infinite;
 }
 
@@ -138,15 +172,14 @@ body {
   0%,
   100% {
     opacity: 1;
-    box-shadow: 0 0 0 0 rgb(55 230 166 / 0.5);
+    box-shadow: 0 0 0 0 rgb(224 83 127 / 0.5);
   }
   50% {
     opacity: 0.55;
-    box-shadow: 0 0 0 6px rgb(55 230 166 / 0);
+    box-shadow: 0 0 0 6px rgb(224 83 127 / 0);
   }
 }
 
-/* underline sweep for links */
 .link-sweep {
   position: relative;
 }
@@ -167,21 +200,21 @@ body {
   transform-origin: left;
 }
 
-/* receipt card — dashed ledger look */
+/* receipt card — pressed-foil ledger */
 .receipt {
-  border: 1px dashed var(--color-line-strong);
+  border: 1px dashed var(--t-line-strong);
   background:
-    repeating-linear-gradient(0deg, transparent 0 27px, rgb(239 233 220 / 0.025) 27px 28px),
-    var(--color-ink-2);
+    repeating-linear-gradient(0deg, transparent 0 27px, rgb(224 83 127 / 0.045) 27px 28px),
+    var(--t-card);
 }
 
 /* marching-ants highlight frame */
 .frame-ants {
   background-image:
-    linear-gradient(90deg, var(--color-line-strong) 50%, transparent 50%),
-    linear-gradient(90deg, var(--color-line-strong) 50%, transparent 50%),
-    linear-gradient(0deg, var(--color-line-strong) 50%, transparent 50%),
-    linear-gradient(0deg, var(--color-line-strong) 50%, transparent 50%);
+    linear-gradient(90deg, var(--color-rose) 50%, transparent 50%),
+    linear-gradient(90deg, var(--color-rose) 50%, transparent 50%),
+    linear-gradient(0deg, var(--color-rose) 50%, transparent 50%),
+    linear-gradient(0deg, var(--color-rose) 50%, transparent 50%);
   background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
   background-size:
     12px 1px,
@@ -206,9 +239,17 @@ body {
   }
 }
 
-/* hero role rotator — only the first line shows until GSAP takes over */
+/* hero role rotator fallback state */
 .role-stack .hero-role:not(:first-child) {
   opacity: 0;
+}
+
+/* soft petal-bokeh blobs */
+.petal {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(42px);
+  pointer-events: none;
 }
 
 /* ── reduced motion ───────────────────────────────────── */
