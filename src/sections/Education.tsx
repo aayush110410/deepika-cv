@@ -68,11 +68,11 @@ export default function Education() {
                 >
                   {e.school}
                 </h3>
-                <p className="text-fg-dim mt-2 font-mono text-[10px] tracking-[0.16em] md:text-xs">
+                <p className="text-fg-dim mt-2 font-mono text-xs tracking-[0.16em] md:text-sm">
                   {e.degree.toUpperCase()}
                 </p>
                 {e.note && (
-                  <p className="text-rose mt-2 font-mono text-[10px] tracking-[0.14em] md:text-xs">
+                  <p className="text-rose mt-2 font-mono text-xs tracking-[0.14em] md:text-sm">
                     ▲ {e.note.toUpperCase()}
                   </p>
                 )}
@@ -87,7 +87,7 @@ export default function Education() {
                     {e.score}
                   </span>
                 )}
-                <span className="text-muted mt-1 block font-mono text-[10px] tracking-[0.14em] md:text-xs">
+                <span className="text-muted mt-1 block font-mono text-xs tracking-[0.14em] md:text-sm">
                   {e.period}
                 </span>
               </div>
@@ -101,7 +101,7 @@ export default function Education() {
           transition={springSoft}
           className="edu-receipt receipt h-fit self-start p-6 md:sticky md:top-24 md:p-8"
         >
-          <p className="text-fg-dim font-mono text-[10px] tracking-[0.22em]">{catReceipt.title}</p>
+          <p className="text-fg-dim font-mono text-xs tracking-[0.22em]">{catReceipt.title}</p>
           <div className="border-line-strong mt-4 border-t border-dashed" />
 
           <div className="mt-5 flex flex-col gap-5">
@@ -125,7 +125,7 @@ export default function Education() {
 
           <div className="border-line-strong mt-6 border-t border-dashed pt-5">
             <div className="flex items-baseline justify-between">
-              <span className="text-fg-dim font-mono text-[10px] tracking-[0.22em]">OVERALL</span>
+              <span className="text-fg-dim font-mono text-xs tracking-[0.22em]">OVERALL</span>
               <span className="face-poster text-rose text-5xl font-semibold md:text-6xl">
                 <Counter value={catReceipt.overall} decimals={2} />
               </span>

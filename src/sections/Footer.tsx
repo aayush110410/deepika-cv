@@ -43,7 +43,7 @@ export default function Footer() {
       className="rule-top relative mt-28 flex min-h-svh flex-col justify-between overflow-hidden md:mt-40"
     >
       <div className="px-5 pt-10 md:px-10 md:pt-14">
-        <p className="ft-meta text-muted max-w-md font-mono text-[10px] leading-relaxed tracking-[0.2em] md:text-xs">
+        <p className="ft-meta text-muted max-w-md font-mono text-xs leading-relaxed tracking-[0.2em] md:text-sm">
           07/ — CONTACT
           <br />
           {footer.note.toUpperCase()}
@@ -51,7 +51,9 @@ export default function Footer() {
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center px-5 py-16">
-        <p className="face-script text-rose mb-2 text-3xl md:text-5xl">shall we?</p>
+        <p className="face-script text-rose relative z-10 mb-6 text-3xl md:mb-10 md:text-5xl">
+          shall we?
+        </p>
         <Magnetic strength={0.25}>
           <motion.a
             whileTap={{ scale: 0.96 }}
@@ -60,20 +62,20 @@ export default function Footer() {
             className="ft-cta group block text-center"
             data-cursor="hover"
           >
-            <div ref={ctaRef} className="relative px-[0.6em]">
+            <div ref={ctaRef} className="relative inline-block">
               <span className="face-wonk text-fg group-hover:text-rose block text-[15vw] leading-[0.95] font-semibold italic transition-colors duration-500 md:text-[11vw]">
                 {footer.cta}
               </span>
-              {/* hand-drawn ring, inked in when it enters view */}
+              {/* hand-drawn ring, inked in when it enters view — transform-centered on the text */}
               <svg
-                className="pointer-events-none absolute -inset-x-[4%] -inset-y-[28%]"
+                className="pointer-events-none absolute top-1/2 left-1/2 h-[165%] w-[114%] -translate-x-1/2 -translate-y-1/2"
                 viewBox="0 0 620 240"
                 fill="none"
                 preserveAspectRatio="none"
                 aria-hidden="true"
               >
                 <motion.path
-                  d="M310 22 C 480 14, 600 62, 598 118 C 596 178, 462 218, 300 220 C 146 222, 22 176, 20 116 C 18 58, 152 24, 340 28"
+                  d="M310 20 C 478 12, 606 60, 606 120 C 606 180, 468 222, 310 222 C 152 222, 14 180, 14 120 C 14 60, 148 22, 336 26"
                   stroke="var(--color-rose)"
                   strokeWidth="3"
                   strokeLinecap="round"
@@ -83,7 +85,7 @@ export default function Footer() {
                 />
               </svg>
             </div>
-            <span className="text-rose mt-6 inline-block font-mono text-[10px] tracking-[0.3em] md:text-xs">
+            <span className="text-rose relative z-10 mt-12 block font-mono text-xs tracking-[0.3em] md:mt-16 md:text-sm">
               {site.email.toUpperCase()} ↗
             </span>
           </motion.a>
@@ -91,24 +93,25 @@ export default function Footer() {
       </div>
 
       <div>
-        <div className="ft-meta text-fg-dim flex flex-wrap items-center justify-between gap-4 px-5 pb-8 font-mono text-[10px] tracking-[0.18em] md:px-10 md:text-xs">
+        <div className="ft-meta text-fg-dim flex flex-wrap items-center justify-between gap-4 px-5 pb-8 font-mono text-sm tracking-[0.16em] md:px-10 md:text-base">
           <motion.a
-            whileHover={{ y: -3 }}
+            whileHover={{ y: -3, borderColor: 'var(--color-rose)', color: 'var(--color-rose)' }}
+            whileTap={{ scale: 0.96 }}
             transition={springSnappy}
             href={site.linkedin}
             target="_blank"
             rel="noreferrer"
-            className="link-sweep"
+            className="border-line-strong text-fg rounded-full border px-6 py-3"
           >
             LINKEDIN ↗
           </motion.a>
-          <span>{site.location.toUpperCase()}</span>
+          <span className="hidden md:inline">{site.location.toUpperCase()}</span>
           <motion.button
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ y: -3, borderColor: 'var(--color-rose)', color: 'var(--color-rose)' }}
+            whileTap={{ scale: 0.96 }}
             transition={springSnappy}
             onClick={() => scrollTo('#top')}
-            className="link-sweep"
+            className="border-line-strong text-fg rounded-full border px-6 py-3"
             data-cursor="hover"
           >
             BACK TO TOP ↑
@@ -123,7 +126,7 @@ export default function Footer() {
           </Marquee>
         </div>
 
-        <div className="border-line text-muted flex flex-wrap items-center justify-between gap-2 border-t px-5 py-4 font-mono text-[9px] tracking-[0.16em] md:px-10 md:text-[10px]">
+        <div className="border-line text-muted flex flex-wrap items-center justify-between gap-2 border-t px-5 py-4 font-mono text-[11px] tracking-[0.16em] md:px-10 md:text-xs">
           <span>
             {site.year} {site.name.toUpperCase()}
           </span>

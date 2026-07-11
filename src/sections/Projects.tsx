@@ -71,7 +71,7 @@ function Row({ project }: { project: (typeof projects)[number] }) {
         <motion.span
           variants={{ hover: { x: -14 } }}
           transition={springSnappy}
-          className="text-muted font-mono text-[10px] tracking-[0.2em] md:text-xs"
+          className="text-muted font-mono text-xs tracking-[0.2em] md:text-sm"
         >
           {project.meta}
         </motion.span>
@@ -130,7 +130,7 @@ export default function Projects() {
           <Row key={p.title} project={p} />
         ))}
       </div>
-      <p className="text-muted px-5 pt-5 font-mono text-[10px] tracking-[0.2em] md:px-10">
+      <p className="text-muted px-5 pt-5 font-mono text-xs tracking-[0.2em] md:px-10 md:text-sm">
         06 ENGAGEMENTS · RESEARCH → PRODUCT → EDUCATION
       </p>
     </section>

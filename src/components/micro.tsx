@@ -151,19 +151,20 @@ export function SectionHeading({
   return (
     <div ref={ref} className="px-5 md:px-10">
       <div className="sh-rule bg-line-strong h-px w-full" />
-      <div className="text-fg-dim flex items-baseline justify-between gap-4 pt-3 pb-10 md:pb-14">
-        <div className="overflow-hidden">
-          <span className="sh-item font-mono text-rose inline-block text-xs md:text-sm">
+      {/* three equal tracks keep the title dead-center regardless of side widths */}
+      <div className="text-fg-dim grid grid-cols-[1fr_auto_1fr] items-baseline gap-4 pt-3 pb-10 md:pb-14">
+        <div className="justify-self-start overflow-hidden">
+          <span className="sh-item font-mono text-rose inline-block text-sm md:text-base">
             {index}
           </span>
         </div>
         <div className="overflow-hidden">
-          <h2 className="sh-item label-caps text-fg inline-block text-sm font-semibold md:text-base">
+          <h2 className="sh-item label-caps text-fg inline-block text-center text-base font-semibold md:text-lg">
             {title}
           </h2>
         </div>
-        <div className="hidden overflow-hidden md:block">
-          <span className="sh-item font-mono inline-block text-xs">{note ?? ''}</span>
+        <div className="hidden justify-self-end overflow-hidden md:block">
+          <span className="sh-item font-mono inline-block text-xs md:text-sm">{note ?? ''}</span>
         </div>
       </div>
     </div>

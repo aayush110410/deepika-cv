@@ -100,7 +100,7 @@ export default function NavOverlay() {
     <div ref={rootRef}>
       {/* top bar */}
       <header className="pointer-events-none fixed top-0 right-0 left-0 z-[85] mix-blend-difference">
-        <div className="text-fg flex items-center justify-between px-5 py-4 font-mono text-[10px] tracking-[0.22em] md:px-10 md:text-xs">
+        <div className="text-fg flex items-center justify-between px-5 py-4 font-mono text-xs tracking-[0.22em] md:px-10 md:text-sm">
           <button
             onClick={() => go('#top')}
             className="pointer-events-auto"
@@ -148,7 +148,7 @@ export default function NavOverlay() {
             ))}
           </nav>
 
-          <div className="text-fg-dim flex flex-wrap items-end justify-between gap-4 font-mono text-[10px] tracking-[0.18em] md:text-xs">
+          <div className="text-fg-dim flex flex-wrap items-end justify-between gap-4 font-mono text-xs tracking-[0.18em] md:text-sm">
             <a href={`mailto:${site.email}`} className="nav-meta link-sweep text-fg">
               {site.email.toUpperCase()}
             </a>

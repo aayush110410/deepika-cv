@@ -3,7 +3,7 @@ import { MotionConfig } from 'motion/react'
 import { LenisContext, useLenis } from './hooks/useLenis'
 import { useFinePointer, useReducedMotion } from './hooks/useMedia'
 import { gsap, ScrollTrigger, useGSAP } from './lib/gsap'
-import { ACTS, type Act } from './lib/theme'
+import { ACTS } from './lib/theme'
 import GrainOverlay from './components/GrainOverlay'
 import CustomCursor from './components/CustomCursor'
 import ScrollProgress from './components/ScrollProgress'
@@ -25,29 +25,34 @@ export default function App() {
   const [ready, setReady] = useState(false)
   const mainRef = useRef<HTMLElement>(null)
 
-  /* the page morphs between the night (plum) and day (blush) acts on scroll */
+  /* The page blends between the night (plum) and day (blush) acts, scrubbed
+     across a tall scroll window so the change washes in gradually. */
   useGSAP(
     () => {
-      let current: Act = 'night'
-      const morph = (act: Act) => {
-        if (act === current) return
-        current = act
-        gsap.to(document.documentElement, {
-          ...ACTS[act],
-          duration: reduced ? 0 : 0.9,
-          ease: 'power2.inOut',
-          overwrite: 'auto',
+      const keys = Object.keys(ACTS.night) as (keyof (typeof ACTS)['night'])[]
+      const root = document.documentElement
+      const blend = (p: number) => {
+        // p: 0 = night, 1 = day
+        keys.forEach((k) => {
+          root.style.setProperty(k, gsap.utils.interpolate(ACTS.night[k], ACTS.day[k], p))
         })
       }
 
-      gsap.utils.toArray<HTMLElement>('[data-act]').forEach((el) => {
-        const act = el.dataset.act as Act
-        ScrollTrigger.create({
-          trigger: el,
-          start: 'top 55%',
-          end: 'bottom 55%',
-          onToggle: (self) => self.isActive && morph(act),
-        })
+      // dawn: hero → profile
+      ScrollTrigger.create({
+        trigger: '#profile',
+        start: 'top 98%',
+        end: 'top 15%',
+        scrub: true,
+        onUpdate: (self) => blend(self.progress),
+      })
+      // dusk: education → selected work
+      ScrollTrigger.create({
+        trigger: '#work',
+        start: 'top 98%',
+        end: 'top 20%',
+        scrub: true,
+        onUpdate: (self) => blend(1 - self.progress),
       })
     },
     { scope: mainRef, dependencies: [reduced] },

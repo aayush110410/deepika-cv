@@ -70,6 +70,13 @@ export const stats = [
 
 export const strengths = ['FAST ON UNFAMILIAR GROUND', 'CURIOSITY AS A HABIT', 'CALM UNDER PRESSURE']
 
+export const quickFacts = [
+  { label: 'HOMETOWN', value: 'Agra, Uttar Pradesh' },
+  { label: 'NOW', value: 'PGDM ’26–28 — MDI Gurgaon' },
+  { label: 'FOCUS', value: 'Equity research → Asset management' },
+  { label: 'OFF-DESK', value: 'Kho-Kho · Badminton · New cuisines' },
+]
+
 /* ── 02 · experience ──────────────────────────────────── */
 
 export const experience = [
@@ -89,6 +96,14 @@ export const experience = [
       'Created and reviewed content for 60+ videos on markets and investment products',
       'Built e-learning on AIFs & Equity Derivatives; mentored 2 interns to ship theirs',
     ],
+    achievements: [
+      'Grew SIF Insight to 1,000+ subscribers within 4 months of launch',
+      'Developed working expertise across the evolving SIF ecosystem — 17+ launches, 20+ strategies',
+      'Scripted and reviewed 60+ educational videos, sharpening financial communication',
+      'Presented the accreditation flow to 4+ stakeholders, gaining regulatory exposure',
+      'Independently learned instructional design and 3+ e-learning authoring tools',
+      'Mentored 2 interns through complete AIF and Equity Derivatives courses',
+    ],
     metrics: ['17+ FUND HOUSES', '20+ STRATEGIES', '60+ VIDEOS', '1,000+ SUBS'],
   },
   {
@@ -104,6 +119,12 @@ export const experience = [
       'Mapped business models, customer segments, revenue drivers and ecosystems',
       'Evaluated leading NBFCs on AUM, growth potential, positioning and shareholding',
     ],
+    achievements: [
+      'Built a working map of 8+ NBFC categories and their role in India’s credit ecosystem',
+      'Assessed leading NBFCs on AUM, customer reach, growth prospects and ownership',
+      'Strengthened comparative research through side-by-side business model analysis',
+      'Learned how regulation and lending focus shape NBFC performance',
+    ],
     metrics: ['8+ NBFC SEGMENTS', 'AUM · GROWTH · OWNERSHIP'],
   },
   {
@@ -118,6 +139,11 @@ export const experience = [
       'Studied the energy commodity ecosystem: drivers, pricing, geopolitics',
       'Analyzed MCX volumes, contract structures and trading mechanisms',
       'Traced price impact across 6+ listed companies with TradingView',
+    ],
+    achievements: [
+      'Linked crude oil and natural gas price moves to stocks of 6+ listed companies',
+      'Developed commodity market analysis, volatility assessment and sectoral research skills',
+      'Gained practical understanding of price discovery and derivatives trading on MCX',
     ],
     metrics: ['6+ LISTED COS', 'MCX DERIVATIVES'],
   },
@@ -263,8 +289,17 @@ export const alsoFluent = [
 /* ── 06 · vision ──────────────────────────────────────── */
 
 export const vision = {
-  kicker: 'THE LONG GAME',
-  line: 'A seat at the fund manager’s desk — compounding trust, one thesis at a time.',
+  kicker: 'THE TRAJECTORY',
+  title: 'Compounding, since 2020.',
+  /* plotted on the chart, left to right */
+  milestones: [
+    { label: 'ICSE — 94.2%', year: '2020' },
+    { label: 'ISC — 94.5%', year: '2022' },
+    { label: 'BBA 9.37 — RANK 1/315', year: '2025' },
+    { label: 'CAT 96.75 %ILE', year: '2025' },
+    { label: 'PGDM — MDI GURGAON', year: '2026–28' },
+    { label: 'FUND MANAGER', year: 'THE GOAL' },
+  ],
 }
 
 export const footer = {

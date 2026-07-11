@@ -16,7 +16,7 @@ function RoleRotator() {
   }, [])
 
   return (
-    <div className="relative h-6 flex-1 overflow-hidden text-right">
+    <div className="relative h-7 flex-1 overflow-hidden text-right">
       <AnimatePresence mode="wait">
         <motion.span
           key={site.roles[idx]}
@@ -24,7 +24,7 @@ function RoleRotator() {
           animate={{ y: 0 }}
           exit={{ y: '-130%' }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="text-rose absolute top-0 right-0 font-mono text-[11px] tracking-[0.12em] md:text-sm"
+          className="text-rose absolute top-0 right-0 font-mono text-sm tracking-[0.12em] md:text-base"
         >
           {site.roles[idx]}
         </motion.span>
@@ -92,42 +92,38 @@ export default function Hero({ ready }: { ready: boolean }) {
 
       <div className="hero-stage relative z-10 flex flex-1 flex-col justify-center px-5 pt-24 md:px-10">
         <div className="overflow-hidden">
-          <p className="hero-meta text-rose font-mono text-[10px] tracking-[0.25em] md:text-xs">
-            <span className="dot-live mr-3 align-middle" />
+          <p className="hero-meta text-rose font-mono text-xs tracking-[0.25em] md:text-sm">
             {site.metaLine}
           </p>
         </div>
 
-        <div className="relative">
+        {/* name owns the left; the right column stays open and clean —
+            drop a portrait in there someday without touching anything */}
+        <div className="md:grid md:grid-cols-[minmax(0,1fr)_clamp(220px,24vw,380px)] md:items-end md:gap-10">
           <h1 className="text-fg mt-5 md:mt-8" aria-label={site.name}>
             <span className="block overflow-hidden py-[0.05em]">
-              <span className="hero-line-1 face-poster block text-[16.5vw] font-semibold tracking-[-0.02em] md:text-[15.5vw]">
+              <span className="hero-line-1 face-poster block text-[15vw] font-semibold tracking-[-0.02em] md:text-[10.5vw]">
                 {site.firstName}
               </span>
             </span>
             <span className="block overflow-hidden py-[0.05em]">
-              <span className="hero-line-2 face-wonk block text-[16.5vw] font-semibold italic tracking-[-0.01em] md:text-[15.5vw]">
+              <span className="hero-line-2 face-wonk block text-[15vw] font-semibold italic tracking-[-0.01em] md:text-[10.5vw]">
                 {site.lastName}
-                <motion.span
-                  whileHover={{ scale: 1.5, rotate: 12 }}
-                  transition={springSnappy}
-                  className="text-rose inline-block not-italic"
-                >
-                  .
-                </motion.span>
               </span>
             </span>
           </h1>
-          <p className="hero-script face-script text-rose absolute -top-4 right-2 hidden -rotate-6 text-3xl md:block lg:text-5xl">
-            future fund manager ✿
-          </p>
+          <div className="hidden md:flex md:h-full md:flex-col md:items-end md:justify-between md:pb-3">
+            <p className="hero-script face-script text-rose -rotate-6 text-4xl lg:text-5xl">
+              future fund manager ✿
+            </p>
+          </div>
         </div>
 
         <div className="hero-rule bg-line-strong mt-8 h-px w-full md:mt-10" />
 
-        <div className="mt-4 flex items-center justify-between gap-6">
+        <div className="mt-5 flex items-center justify-between gap-6">
           <div className="overflow-hidden">
-            <p className="hero-meta label-caps text-fg-dim text-[10px] font-medium md:text-xs">
+            <p className="hero-meta label-caps text-fg-dim text-xs font-medium md:text-sm">
               Finance · Strategy · Leadership
             </p>
           </div>
@@ -138,13 +134,13 @@ export default function Hero({ ready }: { ready: boolean }) {
       </div>
 
       <div className="hero-bottom rule-top relative z-10 mt-12">
-        <Marquee duration={30} className="py-3">
+        <Marquee duration={30} className="py-4">
           {tickerQuotes.map((q) => (
             <motion.span
               key={q.sym}
               whileHover={{ y: -3 }}
               transition={springSnappy}
-              className="text-fg-dim mx-7 flex items-baseline gap-2 font-mono text-[10px] tracking-[0.14em] md:text-xs"
+              className="text-fg-dim mx-8 flex items-baseline gap-2.5 font-mono text-xs tracking-[0.14em] md:text-sm"
             >
               <span className="text-fg">{q.sym}</span>
               <span className="text-rose">{q.val} ▲</span>
