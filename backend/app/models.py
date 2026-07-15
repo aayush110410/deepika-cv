@@ -1,7 +1,7 @@
 import enum
 from datetime import datetime
 
-from sqlalchemy import DateTime, Enum, Integer, String, Text
+from sqlalchemy import JSON, DateTime, Enum, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .db import Base
@@ -47,3 +47,46 @@ class Competition(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.now, onupdate=datetime.now, nullable=False
     )
+
+
+class ReviewStatus(str, enum.Enum):
+    unprocessed = "unprocessed"
+    auto_linked = "auto_linked"
+    needs_review = "needs_review"
+    confirmed = "confirmed"
+    dismissed = "dismissed"
+
+
+class EmailRecord(Base):
+    __tablename__ = "email_records"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    gmail_message_id: Mapped[str] = mapped_column(
+        String, unique=True, index=True, nullable=False
+    )
+    gmail_thread_id: Mapped[str] = mapped_column(String, index=True, nullable=False)
+    sender: Mapped[str] = mapped_column(String, default="", nullable=False)
+    subject: Mapped[str] = mapped_column(String, default="", nullable=False)
+    received_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    raw_body_snippet: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    # Filled by extraction (Phase 3); nullable until then.
+    extracted_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    competition_id: Mapped[int | None] = mapped_column(
+        ForeignKey("competitions.id"), nullable=True
+    )
+    review_status: Mapped[ReviewStatus] = mapped_column(
+        Enum(ReviewStatus, native_enum=False),
+        default=ReviewStatus.unprocessed,
+        nullable=False,
+    )
+
+
+class SyncState(Base):
+    """Single-row table: when the last manual sync ran."""
+
+    __tablename__ = "sync_state"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    last_synced_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    last_history_id: Mapped[str | None] = mapped_column(String, nullable=True)

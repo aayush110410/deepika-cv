@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from .db import Base, engine
-from .routers import competitions
+from .routers import competitions, emails, gmail, sync
 
 Base.metadata.create_all(bind=engine)
 
@@ -19,6 +19,9 @@ app.add_middleware(
 )
 
 app.include_router(competitions.router)
+app.include_router(emails.router)
+app.include_router(gmail.router)
+app.include_router(sync.router)
 
 # If the frontend has been built (cd frontend && npm run build), serve it too,
 # so daily use needs only this one uvicorn process. API routes above win.

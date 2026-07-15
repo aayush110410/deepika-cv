@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from .models import CompetitionStatus, Platform
+from .models import CompetitionStatus, Platform, ReviewStatus
 
 
 class CompetitionCreate(BaseModel):
@@ -42,3 +42,40 @@ class CompetitionOut(BaseModel):
     # Computed server-side so every client shares the same urgency rules.
     urgency: str
     days_left: float | None
+
+
+class EmailRecordOut(BaseModel):
+    model_config = {"from_attributes": True}
+
+    id: int
+    gmail_message_id: str
+    gmail_thread_id: str
+    sender: str
+    subject: str
+    received_at: datetime | None
+    raw_body_snippet: str
+    extracted_json: dict | None
+    confidence: float | None
+    competition_id: int | None
+    review_status: ReviewStatus
+
+
+class GmailStatusOut(BaseModel):
+    connected: bool
+    has_credentials_file: bool
+
+
+class SyncStatusOut(BaseModel):
+    gmail_connected: bool
+    has_credentials_file: bool
+    last_synced_at: datetime | None
+    email_count: int
+
+
+class SyncResultOut(BaseModel):
+    matched: int
+    stored_new: int
+    skipped_existing: int
+    truncated: bool
+    query_used: str
+    synced_at: datetime

@@ -82,6 +82,147 @@ body {
   margin-bottom: 16px;
   font-size: 14px;
 }
+.ok-banner {
+  background: #ecf7ef;
+  color: #14532d;
+  border: 1px solid #c3e6cd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.view-switch {
+  display: flex;
+  background: #e7eaef;
+  border-radius: 9px;
+  padding: 3px;
+}
+.view-switch button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.view-switch button.active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+}
+
+.sync-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
+.sync-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sync-actions {
+  display: flex;
+  gap: 8px;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.dot-on {
+  background: var(--green);
+}
+.dot-off {
+  background: var(--grey);
+}
+
+.email-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.email-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.email-row summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  list-style: none;
+  min-width: 0;
+}
+.email-row summary::-webkit-details-marker {
+  display: none;
+}
+.email-date {
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.email-sender {
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.email-subject {
+  font-weight: 600;
+  font-size: 14px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chip-unprocessed {
+  background: #eef1f5;
+}
+.chip-needs_review {
+  background: rgba(217, 119, 6, 0.12);
+  color: var(--amber);
+}
+.chip-auto_linked,
+.chip-confirmed {
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--green);
+}
+.chip-dismissed {
+  background: #eef1f5;
+  color: var(--grey);
+}
+.email-snippet {
+  margin: 0;
+  padding: 0 14px 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 
 .empty {
   text-align: center;

@@ -7,7 +7,12 @@ async function request(path, options = {}) {
   })
   if (!res.ok) {
     const body = await res.text()
-    throw new Error(`${res.status} ${res.statusText}${body ? ` — ${body}` : ''}`)
+    let detail = body
+    try {
+      detail = JSON.parse(body).detail ?? body
+    } catch { /* not JSON — keep raw text */ }
+    if (typeof detail !== 'string') detail = JSON.stringify(detail)
+    throw new Error(`${res.status} ${res.statusText}${detail ? ` — ${detail}` : ''}`)
   }
   return res.status === 204 ? null : res.json()
 }
@@ -20,4 +25,9 @@ export const api = {
     request(`/api/competitions/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deleteCompetition: (id) =>
     request(`/api/competitions/${id}`, { method: 'DELETE' }),
+
+  listEmails: () => request('/api/emails'),
+  syncStatus: () => request('/api/sync/status'),
+  syncNow: () => request('/api/sync/now', { method: 'POST' }),
+  gmailConnect: () => request('/api/gmail/connect', { method: 'POST' }),
 }
