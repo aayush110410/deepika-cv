@@ -3,6 +3,7 @@ import { api } from './api'
 import CompetitionCard from './components/CompetitionCard'
 import CompetitionForm from './components/CompetitionForm'
 import EmailsView from './components/EmailsView'
+import ReviewView from './components/ReviewView'
 
 export default function App() {
   const [view, setView] = useState('competitions') // 'competitions' | 'emails'
@@ -20,8 +21,10 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    refresh()
-  }, [refresh])
+    // Re-fetch on every return to the competitions view — confirms in the
+    // Review tab create/update competitions behind this list's back.
+    if (view === 'competitions') refresh()
+  }, [view, refresh])
 
   async function handleSave(data) {
     try {
@@ -69,6 +72,12 @@ export default function App() {
               Competitions
             </button>
             <button
+              className={view === 'review' ? 'active' : ''}
+              onClick={() => setView('review')}
+            >
+              Review
+            </button>
+            <button
               className={view === 'emails' ? 'active' : ''}
               onClick={() => setView('emails')}
             >
@@ -85,6 +94,8 @@ export default function App() {
 
       {view === 'emails' ? (
         <EmailsView />
+      ) : view === 'review' ? (
+        <ReviewView />
       ) : (
         <>
           {error && <div className="error-banner">API error: {error}</div>}

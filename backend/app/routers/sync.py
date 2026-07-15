@@ -6,6 +6,7 @@ from ..db import get_db
 from ..models import EmailRecord
 from ..schemas import SyncResultOut, SyncStatusOut
 from ..services import gmail_client
+from ..services.extraction import process_unprocessed
 from ..services.gmail_sync import get_or_create_sync_state, sync_now
 
 router = APIRouter(prefix="/api/sync", tags=["sync"])
@@ -25,8 +26,11 @@ def sync_status(db: Session = Depends(get_db)):
 @router.post("/now", response_model=SyncResultOut)
 def run_sync(db: Session = Depends(get_db)):
     try:
-        return sync_now(db)
+        result = sync_now(db)
     except gmail_client.GmailAuthError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
     except HttpError as exc:
         raise HTTPException(status_code=502, detail=f"Gmail API error: {exc}")
+    # Extraction failures never fail the sync — they surface in the result.
+    result["extraction"] = process_unprocessed(db)
+    return result

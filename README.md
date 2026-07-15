@@ -65,10 +65,32 @@ Sync is **manual only**: the **Sync Now** button pulls messages matching
 `GMAIL_INITIAL_SYNC_DAYS`, default 30). Tune the filter in `backend/app/config.py`
 or via environment variables of the same names — no code changes needed.
 
+## Extraction (Phase 3)
+
+Every sync runs the configured LLM extractor over new emails: irrelevant mail is
+dismissed, relevant mail lands in the **Review** tab where every extracted field is
+editable before you confirm (creates or updates a competition) or dismiss. Nothing is
+auto-merged in this phase.
+
+- **Default extractor: Ollama** (local, free). Install [Ollama](https://ollama.com), then
+  `ollama pull llama3.2` (or set `OLLAMA_MODEL` to a bigger model like `llama3.1:8b`
+  for better extraction). If Ollama is down, sync still stores emails — hit
+  **Run extraction** in the Review tab later.
+- **Optional: Claude** (Anthropic API). `pip install anthropic`, put
+  `ANTHROPIC_API_KEY=...` in `backend/.env`, set `EXTRACTOR=claude`. That's the whole
+  switch — same interface, no code changes.
+- All knobs live in `backend/.env` (see `backend/.env.example`).
+
+Run the backend tests (matching/parsing/transition logic only, per project rules):
+
+```bash
+cd backend && pip install -r requirements-dev.txt && python -m pytest tests/
+```
+
 ## Project phases
 
 - [x] **Phase 1** — Manual CRUD tracker: dashboard sorted nearest-deadline-first with urgency bands (red < 3 days, amber < 7, green beyond, grey no deadline), add/edit/delete, status dropdown.
 - [x] **Phase 2** — Gmail OAuth + raw sync (manual "Sync Now" only).
-- [ ] **Phase 3** — LLM extraction behind an `Extractor` interface (Ollama default), review queue.
+- [x] **Phase 3** — LLM extraction behind an `Extractor` interface (Ollama default), review queue.
 - [ ] **Phase 4** — Auto-merge (thread-ID matches only) + round progression rules.
 - [ ] **Phase 5** — Polish: tabs, review badge, sync status indicator.

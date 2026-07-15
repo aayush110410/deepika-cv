@@ -1,0 +1,24 @@
+"""Extractor selection. The EXTRACTOR env var ('ollama' | 'claude') is the
+single switch — swapping backends is a config change, not a refactor."""
+from ...config import EXTRACTOR
+from .base import (  # noqa: F401  (re-exported for callers and tests)
+    ExtractionParseError,
+    Extractor,
+    ExtractorUnavailable,
+    normalize_extraction,
+    parse_llm_json,
+    run_with_retry,
+)
+
+
+def get_extractor() -> Extractor:
+    name = EXTRACTOR.strip().lower()
+    if name == "ollama":
+        from .ollama import OllamaExtractor
+
+        return OllamaExtractor()
+    if name == "claude":
+        from .claude import ClaudeExtractor
+
+        return ClaudeExtractor()
+    raise ValueError(f"Unknown EXTRACTOR '{EXTRACTOR}' — expected 'ollama' or 'claude'")

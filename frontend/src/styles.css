@@ -224,6 +224,62 @@ body {
   overflow-wrap: anywhere;
 }
 
+.review-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--amber);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 0;
+}
+.review-email {
+  padding: 14px 16px;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+}
+.review-email-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+.review-email .email-snippet {
+  padding: 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.review-form {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.review-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.small {
+  font-size: 12px;
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .review-card {
+    grid-template-columns: 1fr;
+  }
+  .review-email {
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
 .empty {
   text-align: center;
   padding: 70px 0;

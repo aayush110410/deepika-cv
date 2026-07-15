@@ -52,13 +52,18 @@ export default function EmailsView() {
     setNotice(null)
     try {
       const result = await api.syncNow()
+      const extraction = result.extraction
+      const extractionText = extraction.extractor_error
+        ? ` Extraction skipped: ${extraction.extractor_error}`
+        : ` Extracted ${extraction.processed}: ${extraction.needs_review} to review, ${extraction.dismissed} dismissed.`
       setNotice({
-        kind: 'ok',
+        kind: extraction.extractor_error ? 'err' : 'ok',
         text:
           `Sync done: ${result.matched} matched the filter, ` +
           `${result.stored_new} new stored, ${result.skipped_existing} already known` +
           (result.truncated ? ' (hit the per-sync cap — sync again for more)' : '') +
-          `. Query: ${result.query_used}`,
+          '.' +
+          extractionText,
       })
       await refresh()
     } catch (err) {

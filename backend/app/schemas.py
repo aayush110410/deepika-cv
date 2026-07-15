@@ -60,6 +60,27 @@ class EmailRecordOut(BaseModel):
     review_status: ReviewStatus
 
 
+class EmailConfirmIn(BaseModel):
+    """One-tap confirm from the review queue. competition_id null means
+    'create a new Competition from these (user-edited) fields'."""
+
+    competition_id: int | None = None
+    competition_name: str | None = None
+    organizer: str = ""
+    platform: Platform = Platform.other
+    deadline: datetime | None = None
+    round_number: int | None = Field(default=None, ge=1)
+    email_type: str = "other"
+
+
+class ProcessResultOut(BaseModel):
+    processed: int
+    needs_review: int
+    dismissed: int
+    parse_failed: int
+    extractor_error: str | None
+
+
 class GmailStatusOut(BaseModel):
     connected: bool
     has_credentials_file: bool
@@ -79,3 +100,5 @@ class SyncResultOut(BaseModel):
     truncated: bool
     query_used: str
     synced_at: datetime
+    # Extraction now runs as part of every sync (Phase 3).
+    extraction: ProcessResultOut

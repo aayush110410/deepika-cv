@@ -26,8 +26,14 @@ export const api = {
   deleteCompetition: (id) =>
     request(`/api/competitions/${id}`, { method: 'DELETE' }),
 
-  listEmails: () => request('/api/emails'),
+  listEmails: (reviewStatus) =>
+    request(`/api/emails${reviewStatus ? `?review_status=${reviewStatus}` : ''}`),
   syncStatus: () => request('/api/sync/status'),
   syncNow: () => request('/api/sync/now', { method: 'POST' }),
   gmailConnect: () => request('/api/gmail/connect', { method: 'POST' }),
+
+  processEmails: () => request('/api/emails/process', { method: 'POST' }),
+  confirmEmail: (id, data) =>
+    request(`/api/emails/${id}/confirm`, { method: 'POST', body: JSON.stringify(data) }),
+  dismissEmail: (id) => request(`/api/emails/${id}/dismiss`, { method: 'POST' }),
 }

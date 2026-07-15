@@ -1,9 +1,14 @@
 """Tunable configuration. Every constant can be overridden via an
-environment variable of the same name — no code changes needed."""
+environment variable of the same name (or backend/.env) — no code changes
+needed."""
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BACKEND_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BACKEND_DIR / ".env")
 
 # ---------------------------------------------------------------------------
 # Gmail sync
@@ -33,3 +38,18 @@ GMAIL_CREDENTIALS_PATH = Path(
     os.environ.get("GMAIL_CREDENTIALS_PATH", BACKEND_DIR / "credentials.json")
 )
 GMAIL_TOKEN_PATH = Path(os.environ.get("GMAIL_TOKEN_PATH", BACKEND_DIR / "token.json"))
+
+# ---------------------------------------------------------------------------
+# Extraction (Phase 3)
+# ---------------------------------------------------------------------------
+
+# Which Extractor implementation to use: "ollama" (default, local, free)
+# or "claude" (Anthropic API — needs `pip install anthropic` + API key).
+EXTRACTOR = os.environ.get("EXTRACTOR", "ollama")
+
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2")
+OLLAMA_TIMEOUT_SECONDS = int(os.environ.get("OLLAMA_TIMEOUT_SECONDS", "120"))
+
+# Only used when EXTRACTOR=claude.
+CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-opus-4-8")
