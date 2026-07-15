@@ -82,6 +82,15 @@ class ProcessResultOut(BaseModel):
     extractor_error: str | None
 
 
+class OverviewOut(BaseModel):
+    upcoming: int
+    awaiting_result: int
+    archive: int
+    needs_review: int
+    last_synced_at: datetime | None
+    gmail_connected: bool
+
+
 class GmailStatusOut(BaseModel):
     connected: bool
     has_credentials_file: bool

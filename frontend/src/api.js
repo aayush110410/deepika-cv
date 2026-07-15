@@ -18,7 +18,9 @@ async function request(path, options = {}) {
 }
 
 export const api = {
-  listCompetitions: () => request('/api/competitions'),
+  listCompetitions: (bucket) =>
+    request(`/api/competitions${bucket ? `?bucket=${bucket}` : ''}`),
+  overview: () => request('/api/overview'),
   createCompetition: (data) =>
     request('/api/competitions', { method: 'POST', body: JSON.stringify(data) }),
   updateCompetition: (id, data) =>

@@ -13,7 +13,7 @@ function formatDate(iso) {
 
 // Raw ingestion view: exists so the Gmail filter can be tuned — shows exactly
 // what a sync pulled in, nothing more. Extraction comes in Phase 3.
-export default function EmailsView() {
+export default function EmailsView({ onChanged = () => {} }) {
   const [emails, setEmails] = useState(null)
   const [status, setStatus] = useState(null)
   const [busy, setBusy] = useState(false)
@@ -40,6 +40,7 @@ export default function EmailsView() {
       await api.gmailConnect()
       setNotice({ kind: 'ok', text: 'Gmail connected.' })
       await refresh()
+      onChanged()
     } catch (err) {
       setNotice({ kind: 'err', text: err.message })
     } finally {
@@ -67,6 +68,7 @@ export default function EmailsView() {
           extractionText,
       })
       await refresh()
+      onChanged()
     } catch (err) {
       setNotice({ kind: 'err', text: err.message })
     } finally {

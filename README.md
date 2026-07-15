@@ -111,4 +111,7 @@ cd backend && pip install -r requirements-dev.txt && python -m pytest tests/
 - [x] **Phase 2** — Gmail OAuth + raw sync (manual "Sync Now" only).
 - [x] **Phase 3** — LLM extraction behind an `Extractor` interface (Ollama default), review queue.
 - [x] **Phase 4** — Auto-merge (thread-ID matches only) + round progression rules.
-- [ ] **Phase 5** — Polish: tabs, review badge, sync status indicator.
+- [x] **Phase 5** — Polish: tabs (Upcoming / Awaiting result / Archive / Review / Emails)
+  with a needs-review badge and an always-visible sync status indicator. Tab-to-status
+  grouping and all counts come from the API (`/api/overview`, `?bucket=`), so any future
+  client groups identically. Manual add and per-field overrides stay available everywhere.

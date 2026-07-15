@@ -23,6 +23,21 @@ class CompetitionStatus(str, enum.Enum):
     rejected = "rejected"
 
 
+# Tab buckets (Phase 5). Defined server-side so every client groups
+# statuses identically: round_clear keeps a comp in the upcoming list,
+# rejection/result move it to the archive.
+STATUS_BUCKETS: dict[str, list[CompetitionStatus]] = {
+    "upcoming": [
+        CompetitionStatus.upcoming,
+        CompetitionStatus.registered,
+        CompetitionStatus.round_in_progress,
+        CompetitionStatus.cleared_next_round,
+    ],
+    "awaiting_result": [CompetitionStatus.awaiting_result],
+    "archive": [CompetitionStatus.completed, CompetitionStatus.rejected],
+}
+
+
 class Competition(Base):
     __tablename__ = "competitions"
 

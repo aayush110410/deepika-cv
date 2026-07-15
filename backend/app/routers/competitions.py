@@ -1,8 +1,10 @@
+from typing import Literal
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..db import get_db
-from ..models import Competition, CompetitionStatus
+from ..models import STATUS_BUCKETS, Competition, CompetitionStatus
 from ..schemas import CompetitionCreate, CompetitionOut, CompetitionUpdate
 from ..services.urgency import days_left, urgency_for
 
@@ -27,11 +29,15 @@ def get_or_404(comp_id: int, db: Session) -> Competition:
 
 @router.get("", response_model=list[CompetitionOut])
 def list_competitions(
-    status: CompetitionStatus | None = None, db: Session = Depends(get_db)
+    status: CompetitionStatus | None = None,
+    bucket: Literal["upcoming", "awaiting_result", "archive"] | None = None,
+    db: Session = Depends(get_db),
 ):
     query = db.query(Competition)
     if status is not None:
         query = query.filter(Competition.status == status)
+    if bucket is not None:
+        query = query.filter(Competition.status.in_(STATUS_BUCKETS[bucket]))
     comps = query.order_by(
         Competition.current_deadline.is_(None),  # NULL deadlines last
         Competition.current_deadline.asc(),

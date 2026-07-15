@@ -173,7 +173,7 @@ function ReviewCard({ email, competitions, onDone, onError }) {
   )
 }
 
-export default function ReviewView() {
+export default function ReviewView({ onChanged = () => {} }) {
   const [emails, setEmails] = useState(null)
   const [competitions, setCompetitions] = useState([])
   const [notice, setNotice] = useState(null)
@@ -210,11 +210,17 @@ export default function ReviewView() {
             (result.parse_failed ? `, ${result.parse_failed} unparseable` : ''),
       })
       await refresh()
+      onChanged()
     } catch (err) {
       setNotice({ kind: 'err', text: err.message })
     } finally {
       setBusy(false)
     }
+  }
+
+  const handleDone = () => {
+    refresh()
+    onChanged()
   }
 
   return (
@@ -249,7 +255,7 @@ export default function ReviewView() {
               key={email.id}
               email={email}
               competitions={competitions}
-              onDone={refresh}
+              onDone={handleDone}
               onError={(text) => setNotice({ kind: 'err', text })}
             />
           ))}
