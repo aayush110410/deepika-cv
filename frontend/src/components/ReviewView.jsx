@@ -20,9 +20,18 @@ function formatDate(iso) {
 function ReviewCard({ email, competitions, onDone, onError }) {
   const extracted = email.extracted_json ?? {}
   const failed = Boolean(extracted.error)
+  // Phase 4: a certain thread match links the record; a fuzzy match only
+  // suggests. Either way the human confirms — we just preselect.
+  const matchedId = email.competition_id ?? extracted.suggested_competition_id ?? null
+  const matchKind =
+    email.competition_id != null
+      ? 'Matched by Gmail thread'
+      : extracted.suggested_competition_id != null
+        ? 'Suggested match (similar name + known sender)'
+        : null
   const [busy, setBusy] = useState(false)
   const [form, setForm] = useState({
-    competition_id: '',
+    competition_id: matchedId != null ? String(matchedId) : '',
     competition_name: extracted.competition_name ?? '',
     organizer: extracted.organizer ?? '',
     platform: extracted.platform ?? 'other',
@@ -82,6 +91,8 @@ function ReviewCard({ email, competitions, onDone, onError }) {
           </span>
         </div>
         {failed && <p className="error-banner">Extractor error: {extracted.error}</p>}
+        {extracted.flag && <p className="warn-banner">{extracted.flag}</p>}
+        {matchKind && <p className="muted small">{matchKind}</p>}
         <p className="email-snippet">{email.raw_body_snippet || '(empty body)'}</p>
       </div>
 
@@ -194,8 +205,8 @@ export default function ReviewView() {
         kind: result.extractor_error ? 'err' : 'ok',
         text: result.extractor_error
           ? `Extractor unavailable: ${result.extractor_error}`
-          : `Processed ${result.processed}: ${result.needs_review} to review, ` +
-            `${result.dismissed} dismissed` +
+          : `Processed ${result.processed}: ${result.auto_linked} auto-linked, ` +
+            `${result.needs_review} to review, ${result.dismissed} dismissed` +
             (result.parse_failed ? `, ${result.parse_failed} unparseable` : ''),
       })
       await refresh()

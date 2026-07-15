@@ -55,7 +55,8 @@ export default function EmailsView() {
       const extraction = result.extraction
       const extractionText = extraction.extractor_error
         ? ` Extraction skipped: ${extraction.extractor_error}`
-        : ` Extracted ${extraction.processed}: ${extraction.needs_review} to review, ${extraction.dismissed} dismissed.`
+        : ` Extracted ${extraction.processed}: ${extraction.auto_linked} auto-linked, ` +
+          `${extraction.needs_review} to review, ${extraction.dismissed} dismissed.`
       setNotice({
         kind: extraction.extractor_error ? 'err' : 'ok',
         text:

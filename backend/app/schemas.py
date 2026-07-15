@@ -77,6 +77,7 @@ class ProcessResultOut(BaseModel):
     processed: int
     needs_review: int
     dismissed: int
+    auto_linked: int
     parse_failed: int
     extractor_error: str | None
 

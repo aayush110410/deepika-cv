@@ -54,6 +54,7 @@ def test_relevant_goes_to_needs_review(db):
         "processed": 1,
         "needs_review": 1,
         "dismissed": 0,
+        "auto_linked": 0,
         "parse_failed": 0,
         "extractor_error": None,
     }

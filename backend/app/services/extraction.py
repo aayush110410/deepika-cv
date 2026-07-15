@@ -1,7 +1,17 @@
 """Extraction pipeline: run the configured extractor over unprocessed
-EmailRecords and route them — irrelevant → dismissed, relevant →
-needs_review. Everything goes through the review queue in this phase;
-auto-merge is Phase 4."""
+EmailRecords and route them.
+
+Routing (Phase 4):
+  irrelevant                      -> dismissed
+  relevant + thread match         -> auto-merge (auto_linked) — the ONLY
+                                     automatic path; flagged cases (e.g.
+                                     round_clear without a deadline) fall
+                                     back to needs_review with the link kept
+  relevant + fuzzy suggestion     -> needs_review, match preselected
+  relevant, no match              -> needs_review
+"""
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from ..models import EmailRecord, ReviewStatus
@@ -11,6 +21,8 @@ from .extractors import (
     ExtractorUnavailable,
     get_extractor,
 )
+from .matching import find_fuzzy_suggestion, find_thread_match
+from .transitions import apply_email_to_competition
 
 
 def process_unprocessed(db: Session, extractor: Extractor | None = None) -> dict:
@@ -28,6 +40,7 @@ def process_unprocessed(db: Session, extractor: Extractor | None = None) -> dict
         "processed": 0,
         "needs_review": 0,
         "dismissed": 0,
+        "auto_linked": 0,
         "parse_failed": 0,
         "extractor_error": None,
     }
@@ -56,15 +69,48 @@ def process_unprocessed(db: Session, extractor: Extractor | None = None) -> dict
             db.commit()  # per record — a later crash never loses finished work
             continue
 
-        record.extracted_json = data
         record.confidence = data["confidence"]
-        if data["is_relevant"]:
-            record.review_status = ReviewStatus.needs_review
-            result["needs_review"] += 1
-        else:
+        if not data["is_relevant"]:
+            record.extracted_json = data
             record.review_status = ReviewStatus.dismissed
             result["dismissed"] += 1
+        else:
+            _route_relevant(db, record, data, result)
         result["processed"] += 1
         db.commit()
 
     return result
+
+
+def _route_relevant(db: Session, record: EmailRecord, data: dict, result: dict) -> None:
+    comp = find_thread_match(db, record)
+    if comp is not None:
+        # Certain match (same Gmail thread already linked) — the only path
+        # allowed to auto-merge.
+        record.competition_id = comp.id
+        deadline = (
+            datetime.fromisoformat(data["deadline"]) if data["deadline"] else None
+        )
+        _, flag = apply_email_to_competition(
+            comp, data["email_type"], deadline, data["round_number"]
+        )
+        if flag:
+            # Change withheld (e.g. round_clear without a deadline): keep the
+            # certain link, but a human confirms the update.
+            record.extracted_json = {**data, "flag": flag}
+            record.review_status = ReviewStatus.needs_review
+            result["needs_review"] += 1
+        else:
+            record.extracted_json = data
+            record.review_status = ReviewStatus.auto_linked
+            result["auto_linked"] += 1
+        return
+
+    suggestion = find_fuzzy_suggestion(db, record, data["competition_name"])
+    if suggestion is not None:
+        # Medium confidence: suggestion only, never an auto-merge.
+        record.extracted_json = {**data, "suggested_competition_id": suggestion.id}
+    else:
+        record.extracted_json = data
+    record.review_status = ReviewStatus.needs_review
+    result["needs_review"] += 1

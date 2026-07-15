@@ -53,3 +53,12 @@ OLLAMA_TIMEOUT_SECONDS = int(os.environ.get("OLLAMA_TIMEOUT_SECONDS", "120"))
 
 # Only used when EXTRACTOR=claude.
 CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-opus-4-8")
+
+# ---------------------------------------------------------------------------
+# Matching (Phase 4)
+# ---------------------------------------------------------------------------
+
+# Minimum difflib name-similarity (0-1) for a fuzzy match *suggestion*.
+# Fuzzy matches never auto-merge regardless of this value — only exact
+# gmail_thread_id matches do.
+FUZZY_NAME_THRESHOLD = float(os.environ.get("FUZZY_NAME_THRESHOLD", "0.75"))

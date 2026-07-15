@@ -43,7 +43,8 @@ def test_confirm_creates_new_competition(db):
     assert comp.id is not None
     assert comp.name == "HUL L.I.M.E."
     assert comp.current_round == 2
-    assert comp.status == CompetitionStatus.upcoming
+    # Phase 4: a new comp born from a round_clear email starts in that state.
+    assert comp.status == CompetitionStatus.cleared_next_round
     assert record.competition_id == comp.id
     assert record.review_status == ReviewStatus.confirmed
 

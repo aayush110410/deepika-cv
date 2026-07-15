@@ -92,6 +92,15 @@ body {
   font-size: 14px;
   overflow-wrap: anywhere;
 }
+.warn-banner {
+  background: #fdf5e7;
+  color: #7c4a03;
+  border: 1px solid #f2ddb3;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0 0 10px;
+  font-size: 13px;
+}
 
 .topbar-actions {
   display: flex;

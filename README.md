@@ -81,7 +81,25 @@ auto-merged in this phase.
   switch — same interface, no code changes.
 - All knobs live in `backend/.env` (see `backend/.env.example`).
 
-Run the backend tests (matching/parsing/transition logic only, per project rules):
+## Auto-merge (Phase 4)
+
+Matching runs in strict priority order on every processed email:
+
+1. **Gmail thread already linked to a competition** → certain match. This is the *only*
+   path that auto-merges: round progression applies automatically (`round_clear` bumps
+   the round, sets `cleared_next_round`, replaces the deadline; `rejection` → rejected;
+   `result` → completed) and the email is marked `auto_linked`.
+2. **Fuzzy name match + known sender domain** → suggestion only. The email still lands
+   in Review with the match preselected; nothing is written until you confirm.
+3. Anything else → Review, unmatched.
+
+Guard rails: a deadline is never overwritten with null — a `round_clear` without a
+parseable deadline changes nothing and is flagged into Review (with its thread link
+kept). A stale email can never move a competition's round backwards. Tune the fuzzy
+threshold with `FUZZY_NAME_THRESHOLD` (default 0.75); lowering it only affects
+suggestions, never auto-merges.
+
+Run the backend tests (matching/parsing/transition logic, per project rules):
 
 ```bash
 cd backend && pip install -r requirements-dev.txt && python -m pytest tests/
@@ -92,5 +110,5 @@ cd backend && pip install -r requirements-dev.txt && python -m pytest tests/
 - [x] **Phase 1** — Manual CRUD tracker: dashboard sorted nearest-deadline-first with urgency bands (red < 3 days, amber < 7, green beyond, grey no deadline), add/edit/delete, status dropdown.
 - [x] **Phase 2** — Gmail OAuth + raw sync (manual "Sync Now" only).
 - [x] **Phase 3** — LLM extraction behind an `Extractor` interface (Ollama default), review queue.
-- [ ] **Phase 4** — Auto-merge (thread-ID matches only) + round progression rules.
+- [x] **Phase 4** — Auto-merge (thread-ID matches only) + round progression rules.
 - [ ] **Phase 5** — Polish: tabs, review badge, sync status indicator.
