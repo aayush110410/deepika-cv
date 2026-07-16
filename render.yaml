@@ -1,0 +1,25 @@
+# Render Blueprint. Point Render at this repo; it builds the Dockerfile and
+# runs one web service. Set the secret env vars in the dashboard (sync: false
+# means Render will prompt for them — never commit secrets).
+services:
+  - type: web
+    name: casetrack
+    runtime: docker
+    plan: free
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      # https://<your-service>.onrender.com/api/gmail/callback
+      - key: OAUTH_REDIRECT_URI
+        sync: false
+      # Set after the one-time Connect Gmail (the callback page shows it).
+      - key: GMAIL_REFRESH_TOKEN
+        sync: false
+      # Optional: a hosted DATABASE_URL (Postgres/Turso) to keep data across
+      # redeploys — the free tier's disk is ephemeral. See README.
+      - key: DATABASE_URL
+        sync: false

@@ -115,6 +115,36 @@ Run the backend tests (matching/parsing/transition logic, per project rules):
 cd backend && pip install -r requirements-dev.txt && python -m pytest tests/
 ```
 
+## Hosting on Render
+
+The repo ships a `Dockerfile` (builds the frontend, serves everything from one FastAPI
+process) and a `render.yaml` blueprint. Steps:
+
+1. **Push to GitHub**, then in Render: **New → Blueprint** → pick this repo. It creates one
+   Docker web service on the free plan.
+2. **Set env vars** (Render dashboard → Environment):
+   - `GEMINI_API_KEY` — your Google AI Studio key.
+   - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — from your Google **Web** OAuth client
+     (the `web` block of the downloaded JSON).
+   - `OAUTH_REDIRECT_URI` — `https://<your-service>.onrender.com/api/gmail/callback`.
+3. **Register the redirect URI** in Google Cloud console → Credentials → your OAuth client →
+   **Authorized redirect URIs** → add the exact `OAUTH_REDIRECT_URI` above.
+4. **Consent screen → Publishing status:** move it to **In production** (an "unverified app"
+   warning is fine for personal use). In *Testing* mode Google expires the refresh token
+   every 7 days; Production makes it long-lived.
+5. **Open the app → Emails → Connect Gmail.** After consent, the callback page shows a
+   `GMAIL_REFRESH_TOKEN=...` — copy it into a Render env var and redeploy. That makes Gmail
+   access survive restarts (Render's free disk is ephemeral, so `token.json` alone won't).
+
+**Data persistence caveat:** on Render's free tier the filesystem is ephemeral, so the
+SQLite database (your tracked competitions) resets when the service restarts or redeploys.
+To keep data, either add a **Render Disk** and set `DATABASE_PATH` to a file on it, or set
+`DATABASE_URL` to a free hosted database (e.g. Postgres — then `pip install psycopg2-binary`).
+The code reads `DATABASE_URL` / `DATABASE_PATH` from the env, so this is config-only.
+
+> Note: the app has no login — anyone with the URL can see the data and trigger syncs. Keep
+> the URL private, or add an access gate later if you share the link.
+
 ## Project phases
 
 - [x] **Phase 1** — Manual CRUD tracker: dashboard sorted nearest-deadline-first with urgency bands (red < 3 days, amber < 7, green beyond, grey no deadline), add/edit/delete, status dropdown.

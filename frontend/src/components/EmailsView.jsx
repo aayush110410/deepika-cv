@@ -33,19 +33,10 @@ export default function EmailsView({ onChanged = () => {} }) {
     refresh()
   }, [refresh])
 
-  async function handleConnect() {
-    setBusy(true)
-    setNotice({ kind: 'ok', text: 'Complete the Google consent screen in the browser window that just opened on the machine running the backend…' })
-    try {
-      await api.gmailConnect()
-      setNotice({ kind: 'ok', text: 'Gmail connected.' })
-      await refresh()
-      onChanged()
-    } catch (err) {
-      setNotice({ kind: 'err', text: err.message })
-    } finally {
-      setBusy(false)
-    }
+  function handleConnect() {
+    // Full-page redirect to the backend, which sends the browser to Google's
+    // consent screen and redirects back after — works from any device.
+    window.location.href = '/api/gmail/authorize'
   }
 
   async function handleSync() {

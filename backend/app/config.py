@@ -39,6 +39,18 @@ GMAIL_CREDENTIALS_PATH = Path(
 )
 GMAIL_TOKEN_PATH = Path(os.environ.get("GMAIL_TOKEN_PATH", BACKEND_DIR / "token.json"))
 
+# Web OAuth (for hosted deployments). The redirect URI must be registered in
+# the Google Cloud console and match exactly. Client id/secret can come from
+# env (preferred on a host) or from the downloaded credentials.json. After a
+# one-time consent, GMAIL_REFRESH_TOKEN persists access across restarts on
+# ephemeral hosts (Render) without needing token.json on disk.
+OAUTH_REDIRECT_URI = os.environ.get(
+    "OAUTH_REDIRECT_URI", "http://localhost:8000/api/gmail/callback"
+)
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", "")
+GMAIL_REFRESH_TOKEN = os.environ.get("GMAIL_REFRESH_TOKEN", "")
+
 # ---------------------------------------------------------------------------
 # Extraction (Phase 3)
 # ---------------------------------------------------------------------------
