@@ -43,10 +43,19 @@ GMAIL_TOKEN_PATH = Path(os.environ.get("GMAIL_TOKEN_PATH", BACKEND_DIR / "token.
 # Extraction (Phase 3)
 # ---------------------------------------------------------------------------
 
-# Which Extractor implementation to use: "ollama" (default, local, free)
-# or "claude" (Anthropic API — needs `pip install anthropic` + API key).
-EXTRACTOR = os.environ.get("EXTRACTOR", "ollama")
+# Which Extractor implementation to use:
+#   "gemini" (default, hosted, free tier — needs GEMINI_API_KEY)
+#   "ollama" (local model, free — needs Ollama running)
+#   "claude" (Anthropic API — needs `pip install anthropic` + API key)
+EXTRACTOR = os.environ.get("EXTRACTOR", "gemini")
 
+# Gemini (default extractor). Set GEMINI_MODEL to your exact model string;
+# for structured extraction a fast model has the largest free quota, but any
+# model your key can access works (the error message names an unknown model).
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+GEMINI_TIMEOUT_SECONDS = int(os.environ.get("GEMINI_TIMEOUT_SECONDS", "60"))
+
+# Ollama (local alternative).
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2")
 OLLAMA_TIMEOUT_SECONDS = int(os.environ.get("OLLAMA_TIMEOUT_SECONDS", "120"))

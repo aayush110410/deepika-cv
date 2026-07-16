@@ -1,6 +1,6 @@
 # CaseTrack
 
-Personal case-competition deadline tracker. Single user, runs entirely on the local machine — no cloud, no paid services.
+Personal case-competition deadline tracker. Single user. Runs locally, or self-host it to reach it from any device — extraction uses the Gemini API (free tier) so no local model is required.
 
 - **Backend:** FastAPI + SQLite (SQLAlchemy). Owns all business logic (API-first — a native client can reuse the same API later).
 - **Frontend:** React + Vite. Dumb client: calls the API and renders.
@@ -72,14 +72,24 @@ dismissed, relevant mail lands in the **Review** tab where every extracted field
 editable before you confirm (creates or updates a competition) or dismiss. Nothing is
 auto-merged in this phase.
 
-- **Default extractor: Ollama** (local, free). Install [Ollama](https://ollama.com), then
-  `ollama pull llama3.2` (or set `OLLAMA_MODEL` to a bigger model like `llama3.1:8b`
-  for better extraction). If Ollama is down, sync still stores emails — hit
-  **Run extraction** in the Review tab later.
-- **Optional: Claude** (Anthropic API). `pip install anthropic`, put
-  `ANTHROPIC_API_KEY=...` in `backend/.env`, set `EXTRACTOR=claude`. That's the whole
-  switch — same interface, no code changes.
-- All knobs live in `backend/.env` (see `backend/.env.example`).
+The extractor is chosen by the `EXTRACTOR` env var — swapping backends is one config
+change, never a code change:
+
+- **`gemini` (default, hosted, free tier).** No local model needed, so this is the right
+  choice for a hosted deployment. Get an API key from
+  [Google AI Studio](https://aistudio.google.com/apikey), set `GEMINI_API_KEY=...` in the
+  environment (or `backend/.env`), and optionally `GEMINI_MODEL` (defaults to
+  `gemini-2.0-flash` — a fast model has the largest free quota and is plenty for
+  structured extraction; set it to `gemini-3-pro` or any model your key can access).
+- **`ollama` (local, free).** Install [Ollama](https://ollama.com), `ollama pull llama3.2`,
+  set `EXTRACTOR=ollama`. For a local-only setup with no API keys.
+- **`claude` (Anthropic API).** `pip install anthropic`, `ANTHROPIC_API_KEY=...`,
+  `EXTRACTOR=claude`.
+
+If the extractor is unreachable (missing key, quota, Ollama down), sync still stores the
+emails — hit **Run extraction** in the Review tab once it's fixed. A single email blocked
+by a safety filter just goes to Review; it never halts the sync. All knobs live in
+`backend/.env` (see `backend/.env.example`).
 
 ## Auto-merge (Phase 4)
 

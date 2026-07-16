@@ -1,5 +1,6 @@
-"""Extractor selection. The EXTRACTOR env var ('ollama' | 'claude') is the
-single switch — swapping backends is a config change, not a refactor."""
+"""Extractor selection. The EXTRACTOR env var ('gemini' | 'ollama' |
+'claude') is the single switch — swapping backends is a config change, not
+a refactor."""
 from ...config import EXTRACTOR
 from .base import (  # noqa: F401  (re-exported for callers and tests)
     ExtractionParseError,
@@ -13,6 +14,10 @@ from .base import (  # noqa: F401  (re-exported for callers and tests)
 
 def get_extractor() -> Extractor:
     name = EXTRACTOR.strip().lower()
+    if name == "gemini":
+        from .gemini import GeminiExtractor
+
+        return GeminiExtractor()
     if name == "ollama":
         from .ollama import OllamaExtractor
 
@@ -21,4 +26,6 @@ def get_extractor() -> Extractor:
         from .claude import ClaudeExtractor
 
         return ClaudeExtractor()
-    raise ValueError(f"Unknown EXTRACTOR '{EXTRACTOR}' — expected 'ollama' or 'claude'")
+    raise ValueError(
+        f"Unknown EXTRACTOR '{EXTRACTOR}' — expected 'gemini', 'ollama', or 'claude'"
+    )
