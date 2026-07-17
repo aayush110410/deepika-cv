@@ -59,6 +59,7 @@ GMAIL_REFRESH_TOKEN = os.environ.get("GMAIL_REFRESH_TOKEN", "")
 
 # Which Extractor implementation to use:
 #   "gemini" (default, hosted, free tier — needs GEMINI_API_KEY)
+#   "openrouter" (OpenRouter API — needs OPENROUTER_API_KEY)
 #   "ollama" (local model, free — needs Ollama running)
 #   "claude" (Anthropic API — needs `pip install anthropic` + API key)
 EXTRACTOR = os.environ.get("EXTRACTOR", "gemini")
@@ -68,6 +69,12 @@ EXTRACTOR = os.environ.get("EXTRACTOR", "gemini")
 # model your key can access works (the error message names an unknown model).
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-pro-preview")
 GEMINI_TIMEOUT_SECONDS = int(os.environ.get("GEMINI_TIMEOUT_SECONDS", "60"))
+
+# OpenRouter. Free model IDs end in ":free"; change OPENROUTER_MODEL on the
+# host to swap providers without code changes.
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "openai/gpt-oss-20b:free")
+OPENROUTER_TIMEOUT_SECONDS = int(os.environ.get("OPENROUTER_TIMEOUT_SECONDS", "90"))
 
 # Ollama (local alternative).
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")

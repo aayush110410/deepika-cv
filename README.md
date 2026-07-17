@@ -81,6 +81,9 @@ change, never a code change:
   environment (or `backend/.env`), and optionally `GEMINI_MODEL` (defaults to
   `gemini-3.1-pro-preview`, the current Gemini 3 Pro text model for structured
   extraction; set it to any model string your key can access).
+- **`openrouter` (hosted fallback).** Set `OPENROUTER_API_KEY`, `EXTRACTOR=openrouter`,
+  and optionally `OPENROUTER_MODEL`. The default is `openai/gpt-oss-20b:free`;
+  OpenRouter free models use IDs ending in `:free` and have their own rate limits.
 - **`ollama` (local, free).** Install [Ollama](https://ollama.com), `ollama pull llama3.2`,
   set `EXTRACTOR=ollama`. For a local-only setup with no API keys.
 - **`claude` (Anthropic API).** `pip install anthropic`, `ANTHROPIC_API_KEY=...`,

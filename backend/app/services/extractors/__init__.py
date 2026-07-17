@@ -1,6 +1,6 @@
-"""Extractor selection. The EXTRACTOR env var ('gemini' | 'ollama' |
-'claude') is the single switch — swapping backends is a config change, not
-a refactor."""
+"""Extractor selection. The EXTRACTOR env var ('gemini' | 'openrouter' |
+'ollama' | 'claude') is the single switch — swapping backends is a config
+change, not a refactor."""
 from ...config import EXTRACTOR
 from .base import (  # noqa: F401  (re-exported for callers and tests)
     ExtractionParseError,
@@ -18,6 +18,10 @@ def get_extractor() -> Extractor:
         from .gemini import GeminiExtractor
 
         return GeminiExtractor()
+    if name == "openrouter":
+        from .openrouter import OpenRouterExtractor
+
+        return OpenRouterExtractor()
     if name == "ollama":
         from .ollama import OllamaExtractor
 
@@ -27,5 +31,5 @@ def get_extractor() -> Extractor:
 
         return ClaudeExtractor()
     raise ValueError(
-        f"Unknown EXTRACTOR '{EXTRACTOR}' — expected 'gemini', 'ollama', or 'claude'"
+        f"Unknown EXTRACTOR '{EXTRACTOR}' — expected 'gemini', 'openrouter', 'ollama', or 'claude'"
     )
