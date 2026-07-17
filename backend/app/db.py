@@ -10,7 +10,7 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 # hosts with ephemeral filesystems.
 DEFAULT_DB_PATH = Path(__file__).resolve().parent.parent / "casetrack.db"
 DB_PATH = os.environ.get("DATABASE_PATH", str(DEFAULT_DB_PATH))
-DATABASE_URL = os.environ.get("DATABASE_URL", f"sqlite:///{DB_PATH}")
+DATABASE_URL = os.environ.get("DATABASE_URL") or f"sqlite:///{DB_PATH}"
 
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 engine = create_engine(DATABASE_URL, connect_args=connect_args)
