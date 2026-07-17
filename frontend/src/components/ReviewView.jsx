@@ -2,7 +2,19 @@ import { useCallback, useEffect, useState } from 'react'
 import { api } from '../api'
 import { PLATFORM_LABELS } from '../constants'
 
-const EMAIL_TYPES = ['announcement', 'reminder', 'round_clear', 'rejection', 'result', 'other']
+const EMAIL_TYPES = [
+  'announcement',
+  'registration_open',
+  'registration_confirmed',
+  'round_live',
+  'submission_required',
+  'submission_confirmed',
+  'reminder',
+  'round_clear',
+  'rejection',
+  'result',
+  'other',
+]
 
 function formatDate(iso) {
   if (!iso) return '—'
@@ -205,7 +217,7 @@ export default function ReviewView({ onChanged = () => {} }) {
         kind: result.extractor_error ? 'err' : 'ok',
         text: result.extractor_error
           ? `Extractor unavailable: ${result.extractor_error}`
-          : `Processed ${result.processed}: ${result.auto_linked} auto-linked, ` +
+          : `Processed ${result.processed}: ${result.auto_linked} auto-classified, ` +
             `${result.needs_review} to review, ${result.dismissed} dismissed` +
             (result.parse_failed ? `, ${result.parse_failed} unparseable` : ''),
       })

@@ -12,7 +12,19 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 
 PLATFORMS = {"unstop", "direct", "other"}
-EMAIL_TYPES = {"announcement", "reminder", "round_clear", "rejection", "result", "other"}
+EMAIL_TYPES = {
+    "announcement",
+    "registration_open",
+    "registration_confirmed",
+    "round_live",
+    "submission_required",
+    "submission_confirmed",
+    "reminder",
+    "round_clear",
+    "rejection",
+    "result",
+    "other",
+}
 
 
 class ExtractionParseError(Exception):
@@ -50,13 +62,19 @@ Reply with EXACTLY this JSON shape:
   "platform": "unstop" or "direct" or "other",
   "deadline": "ISO 8601 datetime" or null,
   "round_number": integer or null,
-  "email_type": "announcement" or "reminder" or "round_clear" or "rejection" or "result" or "other",
+  "email_type": "announcement" or "registration_open" or "registration_confirmed" or "round_live" or "submission_required" or "submission_confirmed" or "reminder" or "round_clear" or "rejection" or "result" or "other",
   "confidence": number between 0 and 1
 }}
 
 Rules:
 - If the email is not competition-related, set is_relevant to false (other fields may be null).
+- "registration_open": the recipient can still register/apply; this is pending registration.
+- "registration_confirmed": registration/application is complete or confirmed.
+- "round_live" or "submission_required": a current round/task/case/submission is open and action is required.
+- "submission_confirmed": the recipient submitted/completed a round and is now waiting for results.
 - "round_clear" means the recipient advanced or was shortlisted to a next round.
+- "rejection" means not selected, not shortlisted, disqualified, did not qualify, or failed to advance.
+- "result" means final winners/results/completion, not merely waiting for results.
 - deadline: only when the email states one; convert it to ISO 8601, otherwise null.
 - platform: "unstop" if it came via unstop.com, "direct" if directly from the organizing company, else "other".
 

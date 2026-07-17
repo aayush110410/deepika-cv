@@ -157,16 +157,18 @@ class TestPipelineRouting:
         assert comp.current_round == 2
         assert comp.status == CompetitionStatus.round_in_progress
 
-    def test_fuzzy_match_only_suggests_never_merges(self, db):
+    def test_low_confidence_fuzzy_match_only_suggests(self, db):
         comp = make_comp(db, deadline=datetime(2026, 7, 25, 23, 59), round_=2)
         make_email(db, "old", thread="t1", competition_id=comp.id,
                    review_status=ReviewStatus.confirmed)
         new = make_email(db, "new", thread="t2")  # different thread!
 
         result = process_unprocessed(
-            db, StubExtractor(extraction(competition_name="HUL LIME Season 15"))
+            db,
+            StubExtractor(
+                extraction(competition_name="HUL LIME Season 15", confidence=0.65)
+            ),
         )
-        # Even a high-similarity name + known domain must not auto-merge.
         assert result["auto_linked"] == 0 and result["needs_review"] == 1
         assert new.review_status == ReviewStatus.needs_review
         assert new.competition_id is None
@@ -175,9 +177,31 @@ class TestPipelineRouting:
         assert comp.current_round == 2
         assert comp.status == CompetitionStatus.round_in_progress
 
-    def test_no_match_goes_to_plain_review(self, db):
+    def test_high_confidence_fuzzy_match_auto_updates_existing_competition(self, db):
+        comp = make_comp(db, deadline=datetime(2026, 7, 25, 23, 59), round_=2)
+        make_email(db, "old", thread="t1", competition_id=comp.id,
+                   review_status=ReviewStatus.confirmed)
+        new = make_email(db, "new", thread="t2")
+
+        result = process_unprocessed(
+            db,
+            StubExtractor(
+                extraction(
+                    competition_name="HUL LIME Season 15",
+                    email_type="submission_confirmed",
+                    deadline=None,
+                )
+            ),
+        )
+
+        assert result["auto_linked"] == 1 and result["needs_review"] == 0
+        assert new.review_status == ReviewStatus.auto_linked
+        assert new.competition_id == comp.id
+        assert comp.status == CompetitionStatus.awaiting_result
+
+    def test_low_confidence_no_match_goes_to_plain_review(self, db):
         new = make_email(db, "new")
-        result = process_unprocessed(db, StubExtractor(extraction()))
+        result = process_unprocessed(db, StubExtractor(extraction(confidence=0.65)))
         assert result["needs_review"] == 1
         assert new.review_status == ReviewStatus.needs_review
         assert new.competition_id is None

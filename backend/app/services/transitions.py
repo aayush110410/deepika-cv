@@ -7,6 +7,8 @@ Rules per spec:
                  status cleared_next_round, deadline replaced by the new one
   rejection   -> status rejected (lives in the archive from Phase 5 on)
   result      -> status completed
+  registration/submission types -> move between registered, in-progress,
+                                   and awaiting-result states
   reminder / announcement / other -> may refresh deadline/round, never status
 
 Hard guard: a deadline is NEVER overwritten with null. A round_clear that
@@ -18,6 +20,10 @@ from datetime import datetime
 from ..models import Competition, CompetitionStatus
 
 STATUS_FOR_EMAIL_TYPE = {
+    "registration_confirmed": CompetitionStatus.registered,
+    "round_live": CompetitionStatus.round_in_progress,
+    "submission_required": CompetitionStatus.round_in_progress,
+    "submission_confirmed": CompetitionStatus.awaiting_result,
     "round_clear": CompetitionStatus.cleared_next_round,
     "rejection": CompetitionStatus.rejected,
     "result": CompetitionStatus.completed,
@@ -46,6 +52,20 @@ def apply_email_to_competition(
         comp.status = CompetitionStatus.cleared_next_round
         comp.current_deadline = deadline
         return True, None
+
+    if email_type in (
+        "registration_confirmed",
+        "round_live",
+        "submission_required",
+        "submission_confirmed",
+    ):
+        comp.status = STATUS_FOR_EMAIL_TYPE[email_type]
+        changed = True
+        if deadline is not None:
+            comp.current_deadline = deadline
+        if round_number is not None and round_number > comp.current_round:
+            comp.current_round = round_number
+        return changed, None
 
     if email_type == "rejection":
         comp.status = CompetitionStatus.rejected

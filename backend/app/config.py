@@ -18,8 +18,10 @@ load_dotenv(BACKEND_DIR / ".env")
 # https://support.google.com/mail/answer/7190
 GMAIL_SEARCH_QUERY = os.environ.get(
     "GMAIL_SEARCH_QUERY",
-    'from:unstop.com OR "case competition" OR shortlisted OR round '
-    "OR deadline OR submission OR selected",
+    'from:unstop.com OR "case competition" OR competition OR registered '
+    "OR registration OR shortlisted OR round OR deadline OR submission OR "
+    'submitted OR result OR rejected OR "not selected" OR "not qualified" '
+    "OR selected OR qualified OR guidelines",
 )
 
 # How far back the very first sync reaches (there is no last_synced_at yet).
@@ -64,7 +66,7 @@ EXTRACTOR = os.environ.get("EXTRACTOR", "gemini")
 # Gemini (default extractor). Set GEMINI_MODEL to your exact model string;
 # for structured extraction a fast model has the largest free quota, but any
 # model your key can access works (the error message names an unknown model).
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.1-pro-preview")
 GEMINI_TIMEOUT_SECONDS = int(os.environ.get("GEMINI_TIMEOUT_SECONDS", "60"))
 
 # Ollama (local alternative).

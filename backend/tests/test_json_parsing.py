@@ -81,6 +81,17 @@ class TestNormalizeExtraction:
         assert data["platform"] == "other"
         assert data["email_type"] == "other"
 
+    def test_competition_workflow_email_types_are_kept(self):
+        for email_type in (
+            "registration_open",
+            "registration_confirmed",
+            "round_live",
+            "submission_required",
+            "submission_confirmed",
+        ):
+            data = normalize_extraction({"is_relevant": True, "email_type": email_type})
+            assert data["email_type"] == email_type
+
     def test_confidence_clamped_and_defaulted(self):
         assert normalize_extraction({"is_relevant": True, "confidence": 7})["confidence"] == 1.0
         assert normalize_extraction({"is_relevant": True, "confidence": -1})["confidence"] == 0.0

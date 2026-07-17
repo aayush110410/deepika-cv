@@ -68,9 +68,9 @@ or via environment variables of the same names — no code changes needed.
 ## Extraction (Phase 3)
 
 Every sync runs the configured LLM extractor over new emails: irrelevant mail is
-dismissed, relevant mail lands in the **Review** tab where every extracted field is
-editable before you confirm (creates or updates a competition) or dismiss. Nothing is
-auto-merged in this phase.
+dismissed, high-confidence competition mail creates or updates competitions
+automatically, and low-confidence or flagged mail lands in the **Review** tab where
+every extracted field is editable before you confirm or dismiss.
 
 The extractor is chosen by the `EXTRACTOR` env var — swapping backends is one config
 change, never a code change:
@@ -79,35 +79,37 @@ change, never a code change:
   choice for a hosted deployment. Get an API key from
   [Google AI Studio](https://aistudio.google.com/apikey), set `GEMINI_API_KEY=...` in the
   environment (or `backend/.env`), and optionally `GEMINI_MODEL` (defaults to
-  `gemini-2.0-flash` — a fast model has the largest free quota and is plenty for
-  structured extraction; set it to `gemini-3-pro` or any model your key can access).
+  `gemini-3.1-pro-preview`, the current Gemini 3 Pro text model for structured
+  extraction; set it to any model string your key can access).
 - **`ollama` (local, free).** Install [Ollama](https://ollama.com), `ollama pull llama3.2`,
   set `EXTRACTOR=ollama`. For a local-only setup with no API keys.
 - **`claude` (Anthropic API).** `pip install anthropic`, `ANTHROPIC_API_KEY=...`,
   `EXTRACTOR=claude`.
 
 If the extractor is unreachable (missing key, quota, Ollama down), sync still stores the
-emails — hit **Run extraction** in the Review tab once it's fixed. A single email blocked
+emails — hit **Process Emails** in the Emails or Review tab once it's fixed. A single email blocked
 by a safety filter just goes to Review; it never halts the sync. All knobs live in
 `backend/.env` (see `backend/.env.example`).
 
 ## Auto-merge (Phase 4)
 
-Matching runs in strict priority order on every processed email:
+Matching and autopilot run in strict priority order on every processed email:
 
 1. **Gmail thread already linked to a competition** → certain match. This is the *only*
    path that auto-merges: round progression applies automatically (`round_clear` bumps
    the round, sets `cleared_next_round`, replaces the deadline; `rejection` → rejected;
    `result` → completed) and the email is marked `auto_linked`.
-2. **Fuzzy name match + known sender domain** → suggestion only. The email still lands
-   in Review with the match preselected; nothing is written until you confirm.
-3. Anything else → Review, unmatched.
+2. **High-confidence fuzzy name match + known sender domain** → auto-update the
+   existing competition.
+3. **High-confidence new competition** → auto-create it in the right tab
+   (registered/upcoming/awaiting result/archive).
+4. Anything low-confidence or ambiguous → Review.
 
 Guard rails: a deadline is never overwritten with null — a `round_clear` without a
 parseable deadline changes nothing and is flagged into Review (with its thread link
 kept). A stale email can never move a competition's round backwards. Tune the fuzzy
 threshold with `FUZZY_NAME_THRESHOLD` (default 0.75); lowering it only affects
-suggestions, never auto-merges.
+suggestions and high-confidence auto-updates.
 
 Run the backend tests (matching/parsing/transition logic, per project rules):
 

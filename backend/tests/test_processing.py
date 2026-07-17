@@ -1,6 +1,6 @@
 """Pipeline routing: relevant → needs_review, irrelevant → dismissed,
 parse failure → needs_review at confidence 0, backend down → untouched."""
-from app.models import EmailRecord, ReviewStatus
+from app.models import Competition, CompetitionStatus, EmailRecord, ReviewStatus
 from app.services.extraction import process_unprocessed
 from app.services.extractors import (
     ExtractionParseError,
@@ -47,20 +47,33 @@ RELEVANT = {
 IRRELEVANT = {**RELEVANT, "is_relevant": False, "confidence": 0.95}
 
 
-def test_relevant_goes_to_needs_review(db):
+def test_high_confidence_relevant_creates_competition(db):
     record = make_email(db, "m1")
     result = process_unprocessed(db, StubExtractor(RELEVANT))
     assert result == {
         "processed": 1,
-        "needs_review": 1,
+        "needs_review": 0,
         "dismissed": 0,
-        "auto_linked": 0,
+        "auto_linked": 1,
         "parse_failed": 0,
         "extractor_error": None,
     }
-    assert record.review_status == ReviewStatus.needs_review
+    comp = db.query(Competition).one()
+    assert comp.name == "HUL L.I.M.E."
+    assert comp.status == CompetitionStatus.cleared_next_round
+    assert comp.current_round == 2
+    assert record.review_status == ReviewStatus.auto_linked
+    assert record.competition_id == comp.id
     assert record.extracted_json["competition_name"] == "HUL L.I.M.E."
     assert record.confidence == 0.9
+
+
+def test_low_confidence_relevant_goes_to_needs_review(db):
+    record = make_email(db, "m1")
+    result = process_unprocessed(db, StubExtractor({**RELEVANT, "confidence": 0.65}))
+    assert result["needs_review"] == 1
+    assert result["auto_linked"] == 0
+    assert record.review_status == ReviewStatus.needs_review
 
 
 def test_irrelevant_is_dismissed(db):

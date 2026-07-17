@@ -98,6 +98,11 @@ class TestInformationalTypes:
 
 
 def test_status_for_new_competition():
+    assert status_for_new_competition("registration_open") == CompetitionStatus.upcoming
+    assert status_for_new_competition("registration_confirmed") == CompetitionStatus.registered
+    assert status_for_new_competition("round_live") == CompetitionStatus.round_in_progress
+    assert status_for_new_competition("submission_required") == CompetitionStatus.round_in_progress
+    assert status_for_new_competition("submission_confirmed") == CompetitionStatus.awaiting_result
     assert status_for_new_competition("round_clear") == CompetitionStatus.cleared_next_round
     assert status_for_new_competition("rejection") == CompetitionStatus.rejected
     assert status_for_new_competition("result") == CompetitionStatus.completed

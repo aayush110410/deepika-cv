@@ -11,8 +11,8 @@ function formatDate(iso) {
   })
 }
 
-// Raw ingestion view: exists so the Gmail filter can be tuned — shows exactly
-// what a sync pulled in, nothing more. Extraction comes in Phase 3.
+// Gmail ingestion and classification view: sync stores matching messages,
+// then processing classifies unprocessed records into tracker buckets.
 export default function EmailsView({ onChanged = () => {} }) {
   const [emails, setEmails] = useState(null)
   const [status, setStatus] = useState(null)
@@ -47,7 +47,7 @@ export default function EmailsView({ onChanged = () => {} }) {
       const extraction = result.extraction
       const extractionText = extraction.extractor_error
         ? ` Extraction skipped: ${extraction.extractor_error}`
-        : ` Extracted ${extraction.processed}: ${extraction.auto_linked} auto-linked, ` +
+        : ` Extracted ${extraction.processed}: ${extraction.auto_linked} auto-classified, ` +
           `${extraction.needs_review} to review, ${extraction.dismissed} dismissed.`
       setNotice({
         kind: extraction.extractor_error ? 'err' : 'ok',
@@ -57,6 +57,28 @@ export default function EmailsView({ onChanged = () => {} }) {
           (result.truncated ? ' (hit the per-sync cap — sync again for more)' : '') +
           '.' +
           extractionText,
+      })
+      await refresh()
+      onChanged()
+    } catch (err) {
+      setNotice({ kind: 'err', text: err.message })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function handleProcess() {
+    setBusy(true)
+    setNotice(null)
+    try {
+      const result = await api.processEmails()
+      setNotice({
+        kind: result.extractor_error ? 'err' : 'ok',
+        text: result.extractor_error
+          ? `Extractor unavailable: ${result.extractor_error}`
+          : `Processed ${result.processed}: ${result.auto_linked} auto-classified, ` +
+            `${result.needs_review} need review, ${result.dismissed} dismissed` +
+            (result.parse_failed ? `, ${result.parse_failed} unparseable` : ''),
       })
       await refresh()
       onChanged()
@@ -96,6 +118,9 @@ export default function EmailsView({ onChanged = () => {} }) {
           )}
           <button className="btn btn-primary" onClick={handleSync} disabled={busy}>
             {busy ? 'Working…' : 'Sync Now'}
+          </button>
+          <button className="btn" onClick={handleProcess} disabled={busy}>
+            Process Emails
           </button>
         </div>
       </div>

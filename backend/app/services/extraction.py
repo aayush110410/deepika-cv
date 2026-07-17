@@ -1,20 +1,20 @@
 """Extraction pipeline: run the configured extractor over unprocessed
 EmailRecords and route them.
 
-Routing (Phase 4):
+Routing:
   irrelevant                      -> dismissed
-  relevant + thread match         -> auto-merge (auto_linked) — the ONLY
-                                     automatic path; flagged cases (e.g.
-                                     round_clear without a deadline) fall
-                                     back to needs_review with the link kept
-  relevant + fuzzy suggestion     -> needs_review, match preselected
-  relevant, no match              -> needs_review
+  relevant + thread match         -> auto-merge (auto_linked); flagged cases
+                                     (e.g. round_clear without a deadline)
+                                     fall back to needs_review with the link kept
+  relevant + high confidence      -> auto-update suggested match or create a
+                                     new competition
+  relevant + low confidence       -> needs_review
 """
 from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from ..models import EmailRecord, ReviewStatus
+from ..models import Competition, EmailRecord, ReviewStatus
 from .extractors import (
     ExtractionParseError,
     Extractor,
@@ -22,7 +22,9 @@ from .extractors import (
     get_extractor,
 )
 from .matching import find_fuzzy_suggestion, find_thread_match
-from .transitions import apply_email_to_competition
+from .transitions import apply_email_to_competition, status_for_new_competition
+
+AUTO_CONFIRM_CONFIDENCE = 0.8
 
 
 def process_unprocessed(db: Session, extractor: Extractor | None = None) -> dict:
@@ -85,8 +87,7 @@ def process_unprocessed(db: Session, extractor: Extractor | None = None) -> dict
 def _route_relevant(db: Session, record: EmailRecord, data: dict, result: dict) -> None:
     comp = find_thread_match(db, record)
     if comp is not None:
-        # Certain match (same Gmail thread already linked) — the only path
-        # allowed to auto-merge.
+        # Certain match (same Gmail thread already linked).
         record.competition_id = comp.id
         deadline = (
             datetime.fromisoformat(data["deadline"]) if data["deadline"] else None
@@ -108,9 +109,58 @@ def _route_relevant(db: Session, record: EmailRecord, data: dict, result: dict) 
 
     suggestion = find_fuzzy_suggestion(db, record, data["competition_name"])
     if suggestion is not None:
-        # Medium confidence: suggestion only, never an auto-merge.
+        if data["confidence"] >= AUTO_CONFIRM_CONFIDENCE:
+            _auto_apply_to_competition(record, suggestion, data, result)
+            return
         record.extracted_json = {**data, "suggested_competition_id": suggestion.id}
     else:
+        if data["confidence"] >= AUTO_CONFIRM_CONFIDENCE and data["competition_name"]:
+            _auto_create_competition(db, record, data, result)
+            return
         record.extracted_json = data
     record.review_status = ReviewStatus.needs_review
     result["needs_review"] += 1
+
+
+def _auto_apply_to_competition(
+    record: EmailRecord,
+    comp: Competition,
+    data: dict,
+    result: dict,
+) -> None:
+    record.competition_id = comp.id
+    deadline = datetime.fromisoformat(data["deadline"]) if data["deadline"] else None
+    _, flag = apply_email_to_competition(
+        comp, data["email_type"], deadline, data["round_number"]
+    )
+    if flag:
+        record.extracted_json = {**data, "flag": flag}
+        record.review_status = ReviewStatus.needs_review
+        result["needs_review"] += 1
+        return
+    record.extracted_json = data
+    record.review_status = ReviewStatus.auto_linked
+    result["auto_linked"] += 1
+
+
+def _auto_create_competition(
+    db: Session,
+    record: EmailRecord,
+    data: dict,
+    result: dict,
+) -> None:
+    deadline = datetime.fromisoformat(data["deadline"]) if data["deadline"] else None
+    comp = Competition(
+        name=data["competition_name"],
+        organizer=data["organizer"] or "",
+        platform=data["platform"],
+        current_round=data["round_number"] or 1,
+        current_deadline=deadline,
+        status=status_for_new_competition(data["email_type"]),
+    )
+    db.add(comp)
+    db.flush()
+    record.competition_id = comp.id
+    record.extracted_json = data
+    record.review_status = ReviewStatus.auto_linked
+    result["auto_linked"] += 1
