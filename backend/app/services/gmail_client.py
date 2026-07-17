@@ -86,7 +86,12 @@ def _flow() -> Flow:
             "or place the downloaded credentials.json at "
             f"{GMAIL_CREDENTIALS_PATH}."
         )
-    return Flow.from_client_config(cfg, scopes=SCOPES, redirect_uri=OAUTH_REDIRECT_URI)
+    return Flow.from_client_config(
+        cfg,
+        scopes=SCOPES,
+        redirect_uri=OAUTH_REDIRECT_URI,
+        autogenerate_code_verifier=False,
+    )
 
 
 def build_authorization_url() -> str:
